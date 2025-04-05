@@ -78,7 +78,7 @@
     'litv-ftv16' => [1, 2],//好消息
     'litv-ftv17' => [1, 2],//好消息2台
     'litv-longturn01' => [1, 2],//龍華卡通台
-    'litv-longturn02' => [5, 6],//龍華洋片台
+    'litv-longturn02' => [5, 2],//龍華洋片台
     'litv-longturn03' => [5, 6],//龍華電影台
     'litv-longturn04' => [5, 6],//博斯魅力台
     'litv-longturn05' => [5, 2],//博斯高球台
