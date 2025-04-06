@@ -49,7 +49,7 @@
     '4gtv-4gtv072' => [1, 2],//TVBS新聞
     '4gtv-4gtv073' => [1, 2],//TVBS
     '4gtv-4gtv074' => [1, 2],//中視新聞
-    '4gtv-4gtv075' => [1, 2],//鏡新聞
+    '4gtv-4gtv075' => [1, 2],//鏡電視新聞台
     '4gtv-4gtv076' => [1, 2],//亞洲旅遊台
     '4gtv-4gtv077' => [1, 7],//TRACE Sport Stars
     '4gtv-4gtv079' => [1, 2],//ARIRANG阿里郎頻道
@@ -63,12 +63,11 @@
     '4gtv-4gtv103' => [1, 6],//東森購物2台
     '4gtv-4gtv104' => [1, 7],//第1商業台
     '4gtv-4gtv109' => [1, 6],//中天亞洲台
-    '4gtv-4gtv152' => [1, 6],//東森新聞台'
+    '4gtv-4gtv152' => [1, 6],//東森新聞台
     '4gtv-4gtv153' => [1, 2],//東森財經新聞台
     '4gtv-4gtv155' => [1, 6],//民視
-    '4gtv-4gtv156' => [1, 2],//寰宇新聞台灣台
-    '4gtv-4gtv158' => [5, 6],//寰宇財經台
-    'iNEWS' => [5, 6],//三立新聞iNEWS
+    '4gtv-4gtv156' => [1, 6],//寰宇新聞台灣台
+    '4gtv-4gtv158' => [5, 2],//寰宇財經台    
     'litv-ftv03' => [1, 7],//VOA美國之音
     'litv-ftv07' => [1, 7],//民視旅遊台
     'litv-ftv09' => [1, 2],//民視影劇台
@@ -90,12 +89,12 @@
     'litv-longturn11' => [5, 2],//龍華日韓台
     'litv-longturn12' => [5, 2],//龍華偶像台
     'litv-longturn13' => [4, 2],//博斯無限二台
-    'litv-longturn14' => [4, 2],//寰宇新聞 
+    'litv-longturn14' => [4, 2],//寰宇新聞
     'litv-longturn18' => [5, 6],//龍華戲劇台
     'litv-longturn19' => [5, 6],//Smart知識台
     'litv-longturn20' => [5, 6],//ELTV生活英語台
     'litv-longturn21' => [5, 2],//龍華經典台
-    'litv-longturn22' => [5, 2],//台灣戲劇台    
+    'litv-longturn22' => [5, 2],//台灣戲劇台
     );
   $timestamp = intval(time()/4-355017625);
   $t=$timestamp*4;
