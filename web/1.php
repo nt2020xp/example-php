@@ -2,6 +2,7 @@
 /*
 使用方法 litv.php?id=4gtv-4gtv001
 无参数时返回完整频道列表，格式：频道名称,https://ip/litv.php?id=频道ID
+https://1234.koyeb.app/1.php
 */
 header('Content-Type: text/plain; charset=utf-8');
 
