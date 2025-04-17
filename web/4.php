@@ -4,6 +4,7 @@ header('Content-Type: text/json;charset=UTF-8');
 
 // 频道列表
 $ch4g = array(
+    "4gtv-4gtv152" => "東森新聞",
     "4gtv-4gtv039" => "八大综艺台",
     "4gtv-live089" => "三立财经新闻",
     "litv-ftv13" => "民視新聞台",
