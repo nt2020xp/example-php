@@ -105,6 +105,7 @@ $n = array(
 );
 
 $m = array(
+    '4gtv-4gtv152'=>51,//東森新聞
     '4gtv-live208'=>139,//Love Nature
     '4gtv-live201'=>160,//車迷TV
     '4gtv-live206'=>168,//幸福空間居家台
