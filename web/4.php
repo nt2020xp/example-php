@@ -186,7 +186,7 @@ if(isset($n[$id])){
     
     for ($i = 0; $i < 3; $i++) {
         $current .= "#EXTINF:4,"."\r\n";
-        $current .= "https://litvpc-hichannel.cdn.hinet.net/live/pool/{$id}/litv-pc/{$id}-avc1_6000000={$n[$id][0]}-mp4a_134000_zho={$n[$id][1]}-begin={$t}0000000-dur=40000000-seq={$timestamp}.ts"."\n";
+        $current .= "https://ntd-tgc.cdn.hinet.net/live/pool/{$id}/litv-pc/{$id}-avc1_6000000={$n[$id][0]}-mp4a_134000_zho={$n[$id][1]}-begin={$t}0000000-dur=40000000-seq={$timestamp}.ts"."\n";
         $timestamp = $timestamp + 1;
         $t = $t + 4;
     }
