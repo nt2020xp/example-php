@@ -1,7 +1,6 @@
 <?php
 /*
-墙内免翻php
-食用方法4g-litv.php?id=4gtv-4gtv001
+使用方法4g-litv.php?id=4gtv-4gtv001
 */
 header('Content-Type: text/plain; charset=utf-8');
 $php = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
