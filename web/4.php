@@ -1,243 +1,284 @@
 <?php
-/*
-使用方法4g-litv.php?id=4gtv-4gtv001
-*/
-header('Content-Type: text/plain; charset=utf-8');
-$php = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
-$id = isset($_GET['id']) ? $_GET['id'] : 'litv-longturn14';
+error_reporting(0);
+header('Content-Type: text/json;charset=UTF-8');
 
-$n = array(
-    '4gtv-4gtv001' => [1, 6],//民視台灣台
-    '4gtv-4gtv156' => [1, 2],//民視台灣台
-    '4gtv-4gtv002' => [1, 10],//民視
-    '4gtv-4gtv003' => [1, 6],//民視第一台
-    '4gtv-4gtv004' => [1, 8],//民視綜藝台
-    '4gtv-4gtv006' => [1, 9],//豬哥亮歌廳秀
-    '4gtv-4gtv009' => [2, 7],//中天新聞台
-    '4gtv-4gtv010' => [1, 6],//非凡新聞台
-    '4gtv-4gtv011' => [1, 6],//影迷數位電影台
-    '4gtv-4gtv013' => [1, 6],//視納華仁紀實頻道
-    '4gtv-4gtv014' => [1, 5],//時尚運動X
-    '4gtv-4gtv016' => [1, 6],//Globetrotter 環遊旅行家
-    '4gtv-4gtv017' => [1, 6],//AMC 最愛電影
-    '4gtv-4gtv018' => [1, 6],//達文西頻道
-    '4gtv-4gtv034' => [1, 8],//八大精彩台
-    '4gtv-4gtv039' => [1, 7],//八大綜藝台
-    '4gtv-4gtv040' => [1, 8],//中視
-    '4gtv-4gtv041' => [1, 8],//華視
-    '4gtv-4gtv042' => [1, 6],//公視戲劇
-    '4gtv-4gtv043' => [1, 6],//客家電視台
-    '4gtv-4gtv044' => [1, 8],//靖天卡通台
-    '4gtv-4gtv045' => [1, 8],//靖洋戲劇台
-    '4gtv-4gtv046' => [1, 8],//靖天綜合台
-    '4gtv-4gtv047' => [1, 8],//靖天日本台
-    '4gtv-4gtv048' => [1, 2],//非凡商業台
-    '4gtv-4gtv049' => [1, 8],//采昌影劇台
-    '4gtv-4gtv051' => [1, 6],//台視新聞
-    '4gtv-4gtv052' => [1, 2],//華視新聞
-    '4gtv-4gtv053' => [1, 8],//GINX Esports TV
-    '4gtv-4gtv054' => [1, 8],//靖天歡樂台
-    '4gtv-4gtv055' => [1, 8],//靖天映畫
-    '4gtv-4gtv056' => [1, 2],//台視財經
-    '4gtv-4gtv057' => [1, 8],//靖洋卡通台
-    '4gtv-4gtv058' => [1, 8],//靖天戲劇台
-    '4gtv-4gtv059' => [1, 6],//CLASSICA古典樂
-    '4gtv-4gtv061' => [1, 7],//靖天電影台
-    '4gtv-4gtv062' => [1, 8],//靖天育樂台
-    '4gtv-4gtv063' => [1, 6],//靖天國際台
-    '4gtv-4gtv064' => [1, 8],//中視菁采台
-    '4gtv-4gtv065' => [1, 8],//靖天資訊台
-    '4gtv-4gtv066' => [1, 8],//台視
-    '4gtv-4gtv067' => [1, 8],//TVBS精采台
-    '4gtv-4gtv068' => [1, 7],//TVBS歡樂台
-    '4gtv-4gtv070' => [1, 7],//ELTA 娛樂台
-    '4gtv-4gtv072' => [1, 2],//TVBS新聞
-    '4gtv-4gtv073' => [1, 2],//TVBS
-    '4gtv-4gtv074' => [1, 2],//中視新聞
-    '4gtv-4gtv075' => [1, 2],//鏡電視新聞台
-    '4gtv-4gtv076' => [1, 2],//CATCHPLAY電影台
-    '4gtv-4gtv077' => [1, 7],//TRACE Sport Stars
-    '4gtv-4gtv079' => [1, 2],//ARIRANG阿里郎頻道
-    '4gtv-4gtv080' => [1, 2],//中視經典台
-    '4gtv-4gtv082' => [1, 6],//TRACE Urban
-    '4gtv-4gtv083' => [1, 6],//Mezzo Live
-    '4gtv-4gtv084' => [1, 6],//國會頻道1台
-    '4gtv-4gtv085' => [1, 6],//國會頻道2台
-    '4gtv-4gtv101' => [1, 5],//智林體育台
-    '4gtv-4gtv102' => [1, 6],//東森購物1台
-    '4gtv-4gtv103' => [1, 6],//東森購物2台
-    '4gtv-4gtv104' => [1, 6],//第1商業台
-    '4gtv-4gtv109' => [1, 6],//中天亞洲台
-    '4gtv-4gtv152' => [1, 6],//東森新聞台
-    '4gtv-4gtv145' => [1, 7],//霹靂布袋戲
-    '4gtv-4gtv153' => [1, 6],//東森財經新聞台
-    '4gtv-4gtv155' => [1, 6],//民視
-    'litv-ftv03' => [1, 6],//VOA美國之音
-    'litv-ftv07' => [1, 6],//民視旅遊台
-    'litv-ftv09' => [1, 6],//民視影劇台
-    'litv-ftv10' => [1, 6],//半島國際新聞台
-    'litv-ftv13' => [1, 6],//民視新聞台
-    'litv-ftv15' => [1, 6],//i-Fun動漫台
-    'litv-ftv16' => [1, 6],//好消息
-    'litv-ftv17' => [1, 6],//好消息2台
-    'litv-longturn01' => [5, 4],//龍華卡通台
-    'litv-longturn03' => [5, 6],//龍華電影台
-    'litv-longturn04' => [5, 6],//博斯魅力台
-    'litv-longturn05' => [5, 2],//博斯高球台
-    'litv-longturn06' => [5, 2],//博斯高球二台
-    'litv-longturn07' => [5, 2],//博斯運動一台
-    'litv-longturn08' => [5, 2],//博斯運動二台
-    'litv-longturn09' => [5, 2],//博斯網球台
-    'litv-longturn10' => [5, 2],//博斯無限台
-    'litv-longturn11' => [5, 2],//龍華日韓台
-    'litv-longturn12' => [5, 2],//龍華偶像台
-    'litv-longturn13' => [4, 2],//博斯無限二台
-    'litv-longturn14' => [1, 6],//寰宇新聞台
-    'litv-longturn15' => [5, 6],//寰宇新聞台灣台
-    'litv-longturn17' => [5, 2],//亞洲旅遊台
-    'litv-longturn18' => [5, 6],//龍華戲劇台
-    'litv-longturn19' => [5, 6],//Smart知識台
-    'litv-longturn20' => [5, 6],//ELTA生活英語台
-    'litv-longturn21' => [5, 6],//龍華經典台
-    'litv-longturn22' => [5, 2],//台灣戲劇台
-    'litv-longturn23' => [5, 2],//寰宇財經台
+// 频道列表
+$ch4g = array(
+    "4gtv-4gtv039" => "八大综艺台",
+    "4gtv-live089" => "三立财经新闻",
+    "litv-ftv13" => "民視新聞台",
+    "litv-longturn14" => "寰宇新聞台",
+    "4gtv-4gtv052" => "華視新聞資訊台",
+    "4gtv-4gtv012" => "空中英語教室",
+    "litv-ftv07" => "民視旅遊台",
+    "litv-ftv15" => "i-Fun動漫台",
+    "4gtv-live206" => "幸福空間居家台",
+    "4gtv-4gtv070" => "愛爾達娛樂台",
+    "litv-longturn17" => "亞洲旅遊台",
+    "4gtv-4gtv025" => "MTV Live HD",
+    "litv-longturn15" => "寰宇新聞台灣台",
+    "4gtv-4gtv001" => "民視台灣台",
+    "4gtv-4gtv074" => "中視新聞台",
+    "4gtv-4gtv011" => "影迷數位電影台",
+    "4gtv-4gtv047" => "靖天日本台",
+    "litv-longturn11" => "龍華日韓台",
+    "litv-longturn12" => "龍華偶像台",
+    "4gtv-4gtv042" => "公視戲劇",
+    "litv-ftv12" => "i-Fun動漫台3",
+    "4gtv-4gtv002" => "民視無線台",
+    "4gtv-4gtv027" => "CI 罪案偵查頻道",
+    "4gtv-4gtv013" => "CNEX紀實頻道",
+    "litv-longturn03" => "龍華電影台",
+    "4gtv-4gtv004" => "民視綜藝台",
+    "litv-longturn20" => "ELTV英語學習台",
+    "litv-longturn01" => "龍華卡通台",
+    "4gtv-4gtv040" => "中視無線台",
+    "litv-longturn02" => "Baby First",
+    "4gtv-4gtv003" => "民視第一台",
+    "4gtv-4gtv007" => "大愛電視台",
+    "4gtv-4gtv076" => "SMART 知識頻道",
+    "4gtv-4gtv030" => "CNBC",
+    "litv-ftv10" => "半島電視台"
 );
 
-$m = array(   
-    '4gtv-live208'=>139,//Love Nature
-    '4gtv-live201'=>160,//車迷TV
-    '4gtv-live206'=>168,//幸福空間居家台
-    '4gtv-live207'=>169,//三立綜合台
-    '4gtv-live047'=>173,//東森購物一台
-    '4gtv-live046'=>174,//東森購物二台
-    '4gtv-live121'=>175,//LUXE TV Channel
-    '4gtv-live157'=>176,//My Cinema Europe HD 我的歐洲電影
-    '4gtv-live122'=>178,//TV5MONDE STYLE HD 生活時尚
-    '4gtv-live138'=>180,//ROCK Action
-    '4gtv-live109'=>181,//TechStorm
-    '4gtv-live110'=>182,//Pet Club TV
-    '4gtv-live105'=>185,//尼克兒童頻道
-    '4gtv-live620'=>186,//HITS頻道
-    '4gtv-live030'=>188,//LiveABC互動英語頻道
-    '4gtv-live021'=>201,//經典電影台
-    '4gtv-live022'=>202,//經典卡通台
-    '4gtv-live024'=>204,//精選動漫台
-    '4gtv-live007'=>209,//大愛電視
-    '4gtv-live008'=>210,//人間衛視
-    '4gtv-live023'=>212,//影迷數位紀實台
-    '4gtv-live025'=>213,//MTV Live HD 音樂頻道
-    '4gtv-live026'=>214,//History 歷史頻道
-    '4gtv-live027'=>215,//CI 罪案偵查頻道
-    '4gtv-live029'=>217,//Lifetime 娛樂頻道
-    '4gtv-live031'=>218,//電影原聲台CMusic
-    '4gtv-live032'=>219,//Nick Jr. 兒童頻道
-    '4gtv-live050'=>223,//XTR亞太台
-    '4gtv-live060'=>224,//SBN全球財經台
-    '4gtv-live069'=>225,//CinemaWorld
-    '4gtv-live071'=>226,//DW德國之聲
-    '4gtv-live089'=>229,//三立新聞iNEWS  
-    '4gtv-live106'=>230,//大愛二台  
-    '4gtv-live107'=>231,//MOMO親子台  
-    '4gtv-live130'=>235,//CNBC Asia 財經台  
-    '4gtv-live144'=>236,//金光布袋戲  
-    '4gtv-live120'=>237,//愛爾達生活旅遊台  
-    '4gtv-live006'=>244,//戲劇免費看 2台  
-    '4gtv-live005'=>245,//電影免費看 2台  
-    '4gtv-live215'=>246,//民視  
-    '4gtv-live012'=>249,//滾動力rollor
-    '4gtv-live112'=>252,//Global Trekker  
-    '4gtv-live403'=>254,//民視第一台
-    '4gtv-live401'=>255,//民視台灣台
-    '4gtv-live452'=>256,//華視新聞
-    '4gtv-live413'=>257,//民視新聞台
-    '4gtv-live474'=>258,//中視新聞
-    '4gtv-live409'=>260,//中天新聞台
-    '4gtv-live417'=>261,//亞洲旅遊台
-    '4gtv-live408'=>262,//寰宇新聞台
-    '4gtv-live405'=>264,//博斯高球台
-    '4gtv-live404'=>265,//博斯運動一台
-    '4gtv-live407'=>266,//博斯無限台
-    '4gtv-live406'=>267,//博斯網球台
-    '4gtv-live009'=>269,//兒童卡通台
-    '4gtv-live010'=>270,//戲劇免費看 1台
-    '4gtv-live014'=>273,//原住民族電視台
-    '4gtv-live011'=>274,//fun探索娛樂台
-    '4gtv-live080'=>275,//ROCK Entertainment
-    '4gtv-live410'=>276,//八大綜藝台
-    '4gtv-live411'=>277,//時尚運動X
-    '4gtv-live015'=>278,//超人力霸王整套看
-    '4gtv-live016'=>279,//花系列 經典劇場
-    '4gtv-live017'=>282,//DreamWorks 夢工廠動畫
-    '4gtv-live059'=>283,//Bloomberg TV
-    '4gtv-live087'=>284,//TVBS綜藝台
-    '4gtv-live088'=>285,//TVBS台劇台
-    '4gtv-live301'=>289,//番茄直擊台
-    '4gtv-live302'=>290,//芭樂直擊台
+$ch4g2 = array(
+    "31" => "民視新聞台",
+    "234" => "東森新聞台",
+    "36" => "寰宇新聞台",
+    "129" => "TVBS新聞",
+    "33" => "中視新聞",
+    "34" => "華視新聞",
+    "268" => "鏡電視新聞台",
+    "30" => "中天新聞台",
+    "229" => "三立新聞iNEWS",
+    "273" => "原住民族電視台",
+    "85" => "半島國際新聞台",
+    "86" => "VOA美國之音",
+    "226" => "DW德國之聲",
+    "223" => "新唐人亞太台",
+    "211" => "東森財經新聞台",
+    "235" => "CNBC Asia 財經台",
+    "170" => "國會頻道1",
+    "171" => "國會頻道2",
+    "113" => "豬哥亮歌廳秀",
+    "236" => "金光布袋戲",
+    "3" => "民視",
+    "4" => "中視",
+    "6" => "華視",
+    "209" => "大愛電視",
+    "272" => "電影免費看",
+    "270" => "戲劇免費看",
+    "269" => "兒童卡通台",
+    "204" => "精選動漫台",
+    "201" => "經典電影台",
+    "244" => "華語戲劇台",
+    "245" => "華語綜藝台",
+    "202" => "經典卡通台",
+    "219" => "Nick Jr. 兒童頻道",
+    "274" => "fun探索娛樂台",
+    "107" => "客家電視台",
+    "250" => "亞洲旅遊台",
+    "251" => "中天美食旅遊",
+    "249" => "滾動力rollor",
+    "181" => "TechStorm",
+    "1" => "民視第一台",
+    "2" => "民視台灣台",
+    "16" => "民視綜藝台",
+    "24" => "民視影劇台",
+    "139" => "Love Nature",
+    "25" => "采昌影劇台",
+    "21" => "靖天綜合台",
+    "42" => "靖天映畫",
+    "7" => "公視戲劇",
+    "83" => "靖天育樂台",
+    "185" => "尼克兒童頻道",
+    "40" => "影迷數位電影台",
+    "58" => "智林體育台",
+    "22" => "靖天日本台",
+    "82" => "靖天電影台",
+    "123" => "中視菁采台",
+    "169" => "三立綜合台",
+    "214" => "History 歷史頻道",
+    "217" => "Lifetime 娛樂頻道",
+    "52" => "博斯網球台",
+    "48" => "博斯高球台",
+    "180" => "ROCK Action",
+    "179" => "GINX Esports TV",
+    "50" => "博斯運動一台",
+    "51" => "博斯無限台",
+    "57" => "TRACE Sport Stars",
+    "69" => "時尚運動X",
+    "160" => "車迷TV",
+    "231" => "MOMO親子台",
+    "11" => "達文西頻道",
+    "15" => "靖天卡通台",
+    "59" => "靖洋卡通Nice Bingo",
+    "60" => "i-Fun動漫台",
+    "106" => "ELTV生活英語台",
+    "121" => "龍華電影台",
+    "177" => "CATCHPLAY電影台",
+    "200" => "CATCHPLAY Beyond",
+    "176" => "My Cinema Europe HD 我的歐洲電影",
+    "23" => "龍華戲劇台",
+    "28" => "龍華日韓台",
+    "172" => "八大精彩台",
+    "116" => "靖天戲劇台",
+    "118" => "靖洋戲劇台",
+    "225" => "CinemaWorld",
+    "39" => "amc最愛電影",
+    "212" => "影迷數位紀實台",
+    "38" => "視納華仁紀實頻道",
+    "178" => "TV5MONDE STYLE HD 生活時尚",
+    "175" => "LUXE TV Channel",
+    "61" => "民視旅遊台",
+    "168" => "幸福空間居家台",
+    "252" => "Global Trekker",
+    "189" => "ARIRANG阿里郎頻道",
+    "237" => "愛爾達生活旅遊台"
 );
 
-if(isset($n[$id])){
-    $timestamp = intval(time()/4 - 355017625);
-    $t = $timestamp * 4;
-    $current = "#EXTM3U"."\r\n";
-    $current .= "#EXT-X-VERSION:3"."\r\n";
-    $current .= "#EXT-X-TARGETDURATION:4"."\r\n";
-    $current .= "#EXT-X-MEDIA-SEQUENCE:{$timestamp}"."\r\n";
-    
-    for ($i = 0; $i < 3; $i++) {
-        $current .= "#EXTINF:4,"."\r\n";
-        $current .= "https://ntd-tgc.cdn.hinet.net/live/pool/{$id}/litv-pc/{$id}-avc1_6000000={$n[$id][0]}-mp4a_134000_zho={$n[$id][1]}-begin={$t}0000000-dur=40000000-seq={$timestamp}.ts"."\n";
-        $timestamp = $timestamp + 1;
-        $t = $t + 4;
-    }
-    
-    $m3u8 = $current;
-}
-elseif(isset($m[$id])){
-    // 直接访问4gtv源站
-    $url = "https://www.4gtv.tv/channel/{$m[$id]}";
-    $content = curl_request($url, 1, 0);
-    
-    if(preg_match('/url=(.*?\.m3u8)/i', $content, $matches)) {
-        $m3u8_url = trim(urldecode($matches[1]));
-        $m3u8 = curl_request($m3u8_url, 0, 0);
-    } else {
-        die('无法获取直播地址');
-    }
-}
-else {
-    die('没有找到合法id!');
+// 获取频道参数
+$channel = $_GET['channel'] ?? '';
+$headers = [
+    "User-Agent: okhttp/3.12.11",
+    "Referer: https://www.4gtv.tv/",
+    "Origin: https://www.4gtv.tv"
+];
+
+if (empty($channel)) {
+    http_response_code(400);
+    exit(json_encode(['error' => 'Channel parameter is required']));
 }
 
-if(empty($_GET['ts'])){
-    $m3u8 = str_replace('&', '%26', $m3u8);
-    $m3u8 = preg_replace("/(.*?.ts)/i", $php.'?ts='."$1", $m3u8);
-    header('Content-Type: application/vnd.apple.mpegurl'); 
-    header('Content-Disposition: inline; filename='.$id.'.m3u8');
-    header('Content-Length: ' . strlen($m3u8)); 
-    echo $m3u8;
-} else {
-    echo curl_request($_GET['ts'], 0, 0);
-}
+// 处理频道请求
+if (array_key_exists($channel, $ch4g2)) {
+    // 第一种频道处理方式
+    $url = "https://api2.4gtv.tv/Channel/GetChannel/" . $channel;
+    $data = curlRequest($url, $headers);
+    
+    if (strpos($data, 'Error:') === 0) {
+        http_response_code(500);
+        exit(json_encode(['error' => substr($data, 7)]));
+    }
+    
+    $obj = json_decode($data, true);
+    if (!$obj || !isset($obj["Data"])) {
+        http_response_code(404);
+        exit(json_encode(['error' => 'Channel data not found']));
+    }
+    
+    $cno = $obj["Data"]["fnID"];
+    $cid = $obj["Data"]["fs4GTV_ID"];
 
-function curl_request($url, $taga, $tagb){
-    $header = array(
-        'Connection: keep-alive',
-        'User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36',
-        'Accept: */*',
-        'Accept-Language: zh-CN,zh;q=0.9,en;q=0.8'
+    $jarray = array(
+        "fnCHANNEL_ID" => $cno,
+        "fsASSET_ID" => $cid,
+        "fsDEVICE_TYPE" => "mobile",
+        "clsIDENTITY_VALIDATE_ARUS" => array("fsVALUE" => "")
     );
     
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_HEADER, $taga);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    $abc = json_encode($jarray);
+    $key = "ilyB29ZdruuQjC45JhBBR7o2Z8WJ26Vg";
+    $iv = "JUMxvVMmszqUTeKn";
+    $enc = openssl_encrypt($abc, "AES-256-CBC", $key, OPENSSL_RAW_DATA, $iv);
+    $enc = base64_encode($enc);
+
+    $postData = "value=" . urlencode($enc);
+    $resp = curlRequest("https://api2.4gtv.tv/Channel/GetChannelUrl3", $headers, $postData);
     
-    $out = curl_exec($ch);
+    if (strpos($resp, 'Error:') === 0) {
+        http_response_code(500);
+        exit(json_encode(['error' => substr($resp, 7)]));
+    }
+    
+    $resp = json_decode($resp, true);
+    if (!$resp || !isset($resp["Data"])) {
+        http_response_code(404);
+        exit(json_encode(['error' => 'Stream URL not found']));
+    }
+    
+    $resp = openssl_decrypt(base64_decode($resp["Data"]), "AES-256-CBC", $key, OPENSSL_RAW_DATA, $iv);
+    $playlist = json_decode($resp, true)["flstURLs"][0] ?? '';
+    
+    if (empty($playlist)) {
+        http_response_code(404);
+        exit(json_encode(['error' => 'No playable stream found']));
+    }
+    
+    header("Location: " . $playlist);
+    exit;
+} elseif (array_key_exists($channel, $ch4g)) {
+    // 第二种频道处理方式
+    $url = "https://app.4gtv.tv/Data/HiNet/GetURL.ashx?Type=LIVE&Content=" . $channel;
+    $response = curlRequest($url, $headers);
+    
+    if (strpos($response, 'Error:') === 0) {
+        http_response_code(500);
+        exit(json_encode(['error' => substr($response, 7)]));
+    }
+    
+    $jsonStr = findString($response, "{", "}");
+    $data = json_decode($jsonStr, true);
+    
+    if (!$data || !isset($data['VideoURL'])) {
+        http_response_code(404);
+        exit(json_encode(['error' => 'Stream URL not found']));
+    }
+    
+    $vUrl = $data['VideoURL'];
+    $hexkey = "VxzAfiseH0AbLShkQOPwdsssw5KyLeuv";
+    $hexiv = substr($vUrl, 0, 16);
+    $streamurl = openssl_decrypt(base64_decode(substr($vUrl, 16)), "AES-256-CBC", $hexkey, 1, $hexiv);
+    
+    if (empty($streamurl)) {
+        http_response_code(404);
+        exit(json_encode(['error' => 'Failed to decrypt stream URL']));
+    }
+    
+    header("Location: " . $streamurl);
+    exit;
+} else {
+    http_response_code(404);
+    exit(json_encode(['error' => 'Channel not found']));
+}
+
+// 通用cURL请求函数
+function curlRequest($url, $headers = [], $postData = null) {
+    $ch = curl_init();
+    curl_setopt_array($ch, [
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 10,
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false,
+        CURLOPT_HTTPHEADER => $headers,
+        CURLOPT_ENCODING => '',
+        CURLOPT_FOLLOWLOCATION => true
+    ]);
+    
+    if ($postData !== null) {
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+    }
+    
+    $response = curl_exec($ch);
+    if (curl_errno($ch)) {
+        $error = "Error: " . curl_error($ch);
+        curl_close($ch);
+        return $error;
+    }
+    
     curl_close($ch);
-    return $out;
+    return $response;
+}
+
+// 查找字符串函数
+function findString($str, $start, $end) {
+    $from_pos = strpos($str, $start);
+    if ($from_pos === false) return '';
+    
+    $end_pos = strpos($str, $end, $from_pos);
+    if ($end_pos === false) return '';
+    
+    return substr($str, $from_pos, ($end_pos - $from_pos + 1));
 }
