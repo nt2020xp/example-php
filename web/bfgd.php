@@ -1,363 +1,210 @@
 <?php
 /*
-CCTV1高清
-http://IP/bfgd.php?id=201
-CCTV1高清
-http://IP/bfgd.php?id=484
-CCTV1高清
-http://IP/bfgd.php?id=488
-CCTV1高清
-http://IP/bfgd.php?id=489
-CCTV2高清
-http://IP/bfgd.php?id=061
-CCTV3高清
-http://IP/bfgd.php?id=062
-CCTV4高清
-http://IP/bfgd.php?id=063
-CCTV5高清
-http://IP/bfgd.php?id=064
-CCTV5+高清
-http://IP/bfgd.php?id=246
-CCTV6高清
-http://IP/bfgd.php?id=065
-CCTV7高清
-http://IP/bfgd.php?id=127
-CCTV8高清
-http://IP/bfgd.php?id=066
-CCTV9高清
-http://IP/bfgd.php?id=128
-CCTV10高清
-http://IP/bfgd.php?id=129
-CCTV11高清
-http://IP/bfgd.php?id=130
-CCTV12高清
-http://IP/bfgd.php?id=131
-CCTV13高清
-http://IP/bfgd.php?id=067
-CCTV14高清
-http://IP/bfgd.php?id=132
-CCTV15高清
-http://IP/bfgd.php?id=133
-CCTV17高清
-http://IP/bfgd.php?id=204
-CETV1高清
-http://IP/bfgd.php?id=135
-CETV2
-http://IP/bfgd.php?id=492
-CGTN
-http://IP/bfgd.php?id=134
-CGTN西班牙语
-http://IP/bfgd.php?id=306
-CGTN阿拉伯语
-http://IP/bfgd.php?id=308
-CGTN法语
-http://IP/bfgd.php?id=307
-CGTN
-http://IP/bfgd.php?id=305
-CGTN俄语
-http://IP/bfgd.php?id=309
-求索动物
-http://IP/bfgd.php?id=287
-求索生活
-http://IP/bfgd.php?id=288
-求索地理
-http://IP/bfgd.php?id=286
-国学频道
-http://IP/bfgd.php?id=169
-发现之旅
-http://IP/bfgd.php?id=151
-老故事
-http://IP/bfgd.php?id=166
-女性时尚
-http://IP/bfgd.php?id=176
-世界地理
-http://IP/bfgd.php?id=177
-江苏卫视高清
-http://IP/bfgd.php?id=085
-天津卫视高清
-http://IP/bfgd.php?id=084
-湖南卫视高清
-http://IP/bfgd.php?id=086
-北京卫视高清
-http://IP/bfgd.php?id=083
-黑龙江卫视高清
-http://IP/bfgd.php?id=095
-广东卫视高清
-http://IP/bfgd.php?id=092
-东方卫视高清
-http://IP/bfgd.php?id=093
-浙江卫视高清
-http://IP/bfgd.php?id=094
-吉林卫视高清
-http://IP/bfgd.php?id=097
-安徽卫视高清
-http://IP/bfgd.php?id=096
-江西卫视高清
-http://IP/bfgd.php?id=098
-山东卫视高清
-http://IP/bfgd.php?id=099
-贵州卫视高清
-http://IP/bfgd.php?id=101
-深圳卫视高清
-http://IP/bfgd.php?id=100
-湖北卫视高清
-http://IP/bfgd.php?id=102
-四川卫视高清
-http://IP/bfgd.php?id=103
-陕西卫视高清
-http://IP/bfgd.php?id=512
-河南卫视高清
-http://IP/bfgd.php?id=339
-海南卫视高清
-http://IP/bfgd.php?id=473
-云南卫视高清
-http://IP/bfgd.php?id=482
-东南卫视高清
-http://IP/bfgd.php?id=483
-重温经典
-http://IP/bfgd.php?id=636
-金鹰卡通
-http://IP/bfgd.php?id=105
-河南卫视
-http://IP/bfgd.php?id=104
-北京卡酷少儿
-http://IP/bfgd.php?id=106
-重庆卫视高清
-http://IP/bfgd.php?id=107
-山西卫视
-http://IP/bfgd.php?id=109
-河北卫视高清
-http://IP/bfgd.php?id=108
-青海卫视
-http://IP/bfgd.php?id=111
-内蒙古卫视
-http://IP/bfgd.php?id=110
-山东教育卫视
-http://IP/bfgd.php?id=112
-北京纪实科教高清
-http://IP/bfgd.php?id=113
-广西卫视高清
-http://IP/bfgd.php?id=116
-云南卫视
-http://IP/bfgd.php?id=115
-宁夏卫视
-http://IP/bfgd.php?id=118
-陕西卫视
-http://IP/bfgd.php?id=114
-延边卫视
-http://IP/bfgd.php?id=117
-甘肃卫视
-http://IP/bfgd.php?id=119
-西藏卫视
-http://IP/bfgd.php?id=121
-农林卫视
-http://IP/bfgd.php?id=122
-兵团卫视
-http://IP/bfgd.php?id=124
-家庭影院
-http://IP/bfgd.php?id=289
-家庭剧场
-http://IP/bfgd.php?id=290
-外国影院
-http://IP/bfgd.php?id=291
-综艺
-http://IP/bfgd.php?id=292
-午夜影院
-http://IP/bfgd.php?id=294
-纪录片
-http://IP/bfgd.php?id=295
-游戏竞技
-http://IP/bfgd.php?id=296
-儿童动漫
-http://IP/bfgd.php?id=293
-3D影院
-http://IP/bfgd.php?id=298
-绘画
-http://IP/bfgd.php?id=297
-家庭理财
-http://IP/bfgd.php?id=139
-网络棋牌
-http://IP/bfgd.php?id=141
-游戏竞技
-http://IP/bfgd.php?id=142
-天元围棋
-http://IP/bfgd.php?id=144
-电子体育
-http://IP/bfgd.php?id=143
-环球旅游
-http://IP/bfgd.php?id=147
-车迷频道
-http://IP/bfgd.php?id=146
-生态环境
-http://IP/bfgd.php?id=149
-优优宝贝
-http://IP/bfgd.php?id=153
-新疆卫视
-http://IP/bfgd.php?id=150
-收藏天下
-http://IP/bfgd.php?id=155
-中华特产
-http://IP/bfgd.php?id=158
-中国天气
-http://IP/bfgd.php?id=160
-法治天地
-http://IP/bfgd.php?id=162
-电视指南
-http://IP/bfgd.php?id=164
-家政
-http://IP/bfgd.php?id=167
-重庆汽摩
-http://IP/bfgd.php?id=168
-茶频道
-http://IP/bfgd.php?id=181
-书画
-http://IP/bfgd.php?id=180
-百姓健康
-http://IP/bfgd.php?id=219
-摄影频道
-http://IP/bfgd.php?id=222
-财富天下
-http://IP/bfgd.php?id=231
-四海钓鱼
-http://IP/bfgd.php?id=229
-先锋乒羽
-http://IP/bfgd.php?id=349
-证券服务
-http://IP/bfgd.php?id=610
-天元围棋
-http://IP/bfgd.php?id=633
-辽宁卫视高清
-http://IP/bfgd.php?id=058
-辽宁都市高清
-http://IP/bfgd.php?id=610
-辽宁北方高清
-http://IP/bfgd.php?id=071
-辽宁生活高清
-http://IP/bfgd.php?id=073
-辽宁体育高清
-http://IP/bfgd.php?id=611
-辽宁影视剧高清
-http://IP/bfgd.php?id=070
-辽宁教育青少高清
-http://IP/bfgd.php?id=075
-辽宁经济高清
-http://IP/bfgd.php?id=076
-辽宁公共高清
-http://IP/bfgd.php?id=077
-辽宁公共高清
-http://IP/bfgd.php?id=481
-辽宁经济高清
-http://IP/bfgd.php?id=480
-北方导视高清
-http://IP/bfgd.php?id=187
-辽宁新动漫
-http://IP/bfgd.php?id=140
-社区老年教育课堂
-http://IP/bfgd.php?id=615
-沈阳新闻综合高清
-http://IP/bfgd.php?id=059
-抚顺综合
-http://IP/bfgd.php?id=275
-鞍山新闻综合
-http://IP/bfgd.php?id=274
-大连新闻综合
-http://IP/bfgd.php?id=273
-丹东新闻综合
-http://IP/bfgd.php?id=276
-锦州新闻综合
-http://IP/bfgd.php?id=277
-阜新综合
-http://IP/bfgd.php?id=279
-辽阳新闻综合
-http://IP/bfgd.php?id=280
-营口新闻综合
-http://IP/bfgd.php?id=278
-盘锦新闻综合
-http://IP/bfgd.php?id=283
-铁岭新闻综合
-http://IP/bfgd.php?id=281
-朝阳新闻综合
-http://IP/bfgd.php?id=282
-本溪综合
-http://IP/bfgd.php?id=312
-连山区综合
-http://IP/bfgd.php?id=491
-龙港区综合
-http://IP/bfgd.php?id=490
-葫芦岛新闻综合
-http://IP/bfgd.php?id=284
-*/
-$head_httplive = 'http://httplive.slave.bfgd.com.cn:14311';
-$head_httpstream = 'http://httpstream.slave.bfgd.com.cn:14312';
+ * 電視直播系統 (簡化版)
+ * 版本：2023-12-20
+ * 功能：僅保留直播功能，包含完整頻道列表
+ */
 
-function getcurl($url) {
-    $user_agent = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)";
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url); // 设置要访问的URL
-    curl_setopt($ch, CURLOPT_USERAGENT, $user_agent); // 模拟用户使用的浏览器
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); // 使用自动跳转
-    curl_setopt($ch, CURLOPT_TIMEOUT, 60); // 设置超时时间
-    curl_setopt($ch, CURLOPT_AUTOREFERER, 1); // 自动设置Referer
-    curl_setopt($ch, CURLOPT_HEADER, 0); // 不显示返回的HEAD区域的内容
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); // 返回结果而不是输出
-    $result = curl_exec($ch);
-    if (curl_errno($ch)) {
-        echo 'Error:' . curl_error($ch); // 处理cURL错误
+// 設定時區
+date_default_timezone_set('Asia/Shanghai');
+
+// 常數定義
+define('LIVE_SERVER', 'http://httplive.slave.bfgd.com.cn:14311');
+define('ACCESS_TOKEN', 'R5F2408FEU3198804BK78052214IE73560DFP2BF4M340CE68V0Z339CBW1626D4D261E46FEA');
+define('CHANNEL_PREFIX', '4200000');
+
+// 完整頻道ID映射
+$channelMap = [
+    '201' => 'CCTV1高清',
+    '484' => 'CCTV1高清',
+    '488' => 'CCTV1高清',
+    '489' => 'CCTV1高清',
+    '061' => 'CCTV2高清',
+    '062' => 'CCTV3高清',
+    '063' => 'CCTV4高清',
+    '064' => 'CCTV5高清',
+    '246' => 'CCTV5+高清',
+    '065' => 'CCTV6高清',
+    '127' => 'CCTV7高清',
+    '066' => 'CCTV8高清',
+    '128' => 'CCTV9高清',
+    '129' => 'CCTV10高清',
+    '130' => 'CCTV11高清',
+    '131' => 'CCTV12高清',
+    '067' => 'CCTV13高清',
+    '132' => 'CCTV14高清',
+    '133' => 'CCTV15高清',
+    '204' => 'CCTV17高清',
+    '135' => 'CETV1高清',
+    '492' => 'CETV2',
+    '134' => 'CGTN',
+    '306' => 'CGTN西班牙語',
+    '308' => 'CGTN阿拉伯語',
+    '307' => 'CGTN法語',
+    '305' => 'CGTN',
+    '309' => 'CGTN俄語',
+    '287' => '求索動物',
+    '288' => '求索生活',
+    '286' => '求索地理',
+    '169' => '國學頻道',
+    '151' => '發現之旅',
+    '166' => '老故事',
+    '176' => '女性時尚',
+    '177' => '世界地理',
+    '085' => '江蘇衛視高清',
+    '084' => '天津衛視高清',
+    '086' => '湖南衛視高清',
+    '083' => '北京衛視高清',
+    '095' => '黑龍江衛視高清',
+    '092' => '廣東衛視高清',
+    '093' => '東方衛視高清',
+    '094' => '浙江衛視高清',
+    '097' => '吉林衛視高清',
+    '096' => '安徽衛視高清',
+    '098' => '江西衛視高清',
+    '099' => '山東衛視高清',
+    '101' => '貴州衛視高清',
+    '100' => '深圳衛視高清',
+    '102' => '湖北衛視高清',
+    '103' => '四川衛視高清',
+    '512' => '陝西衛視高清',
+    '339' => '河南衛視高清',
+    '473' => '海南衛視高清',
+    '482' => '雲南衛視高清',
+    '483' => '東南衛視高清',
+    '636' => '重溫經典',
+    '105' => '金鷹卡通',
+    '104' => '河南衛視',
+    '106' => '北京卡酷少兒',
+    '107' => '重慶衛視高清',
+    '109' => '山西衛視',
+    '108' => '河北衛視高清',
+    '111' => '青海衛視',
+    '110' => '內蒙古衛視',
+    '112' => '山東教育衛視',
+    '113' => '北京紀實科教高清',
+    '116' => '廣西衛視高清',
+    '115' => '雲南衛視',
+    '118' => '寧夏衛視',
+    '114' => '陝西衛視',
+    '117' => '延邊衛視',
+    '119' => '甘肅衛視',
+    '121' => '西藏衛視',
+    '122' => '農林衛視',
+    '124' => '兵團衛視',
+    '289' => '家庭影院',
+    '290' => '家庭劇場',
+    '291' => '外國影院',
+    '292' => '綜藝',
+    '294' => '午夜影院',
+    '295' => '紀錄片',
+    '296' => '遊戲競技',
+    '293' => '兒童動漫',
+    '298' => '3D影院',
+    '297' => '繪畫',
+    '139' => '家庭理財',
+    '141' => '網絡棋牌',
+    '142' => '遊戲競技',
+    '144' => '天元圍棋',
+    '143' => '電子體育',
+    '147' => '環球旅遊',
+    '146' => '車迷頻道',
+    '149' => '生態環境',
+    '153' => '優優寶貝',
+    '150' => '新疆衛視',
+    '155' => '收藏天下',
+    '158' => '中華特產',
+    '160' => '中國天氣',
+    '162' => '法治天地',
+    '164' => '電視指南',
+    '167' => '家政',
+    '168' => '重慶汽摩',
+    '181' => '茶頻道',
+    '180' => '書畫',
+    '219' => '百姓健康',
+    '222' => '攝影頻道',
+    '231' => '財富天下',
+    '229' => '四海釣魚',
+    '349' => '先鋒乒羽',
+    '610' => '證券服務',
+    '633' => '天元圍棋',
+    '058' => '遼寧衛視高清',
+    '610' => '遼寧都市高清',
+    '071' => '遼寧北方高清',
+    '073' => '遼寧生活高清',
+    '611' => '遼寧體育高清',
+    '070' => '遼寧影視劇高清',
+    '075' => '遼寧教育青少高清',
+    '076' => '遼寧經濟高清',
+    '077' => '遼寧公共高清',
+    '481' => '遼寧公共高清',
+    '480' => '遼寧經濟高清',
+    '187' => '北方導視高清',
+    '140' => '遼寧新動漫',
+    '615' => '社區老年教育課堂',
+    '059' => '瀋陽新聞綜合高清',
+    '275' => '撫順綜合',
+    '274' => '鞍山新聞綜合',
+    '273' => '大連新聞綜合',
+    '276' => '丹東新聞綜合',
+    '277' => '錦州新聞綜合',
+    '279' => '阜新綜合',
+    '280' => '遼陽新聞綜合',
+    '278' => '營口新聞綜合',
+    '283' => '盤錦新聞綜合',
+    '281' => '鐵嶺新聞綜合',
+    '282' => '朝陽新聞綜合',
+    '312' => '本溪綜合',
+    '491' => '連山區綜合',
+    '490' => '龍港區綜合',
+    '284' => '葫蘆島新聞綜合'
+];
+
+// 獲取頻道信息
+function getChannelInfo($channelId) {
+    $apiUrl = 'http://slave.bfgd.com.cn/media/channel/get_info?' . http_build_query([
+        'chnlid' => CHANNEL_PREFIX . $channelId,
+        'accesstoken' => ACCESS_TOKEN
+    ]);
+    
+    $response = @file_get_contents($apiUrl);
+    if ($response === false) {
+        return null;
     }
-    curl_close($ch);
-    return $result;
+    
+    return json_decode($response);
 }
 
-function getinfo_json($chnlid, $token) {
-    $i_url = 'http://slave.bfgd.com.cn/media/channel/get_info?chnlid=4200000' . $chnlid . '&accesstoken=' . $token;
-    $i_result = file_get_contents($i_url);
-    return json_decode($i_result);
+// 獲取播放URL
+function getPlayUrl($channelId, $playToken) {
+    return LIVE_SERVER . '/playurl?' . http_build_query([
+        'playtype' => 'live',
+        'protocol' => 'hls',
+        'accesstoken' => ACCESS_TOKEN,
+        'programid' => CHANNEL_PREFIX . $channelId,
+        'playtoken' => $playToken
+    ]);
 }
 
-$accesstoken = 'R5F2408FEU3198804BK78052214IE73560DFP2BF4M340CE68V0Z339CBW1626D4D261E46FEA';
+// 主處理流程
+$id = isset($_GET['id']) ? preg_replace('/[^0-9]/', '', $_GET['id']) : '610';
 
-$id = isset($_GET['id']) ? $_GET['id'] : '610';
-$type = isset($_GET['type']) ? $_GET['type'] : 'live';
-
-if ($type == 'live') {
-    // 直播
-    header("ACCESS-CONTROL-ALLOW-ORIGIN:*");
-    $json = getinfo_json($id, $accesstoken);
-    $playtoken = isset($json->play_token) ? $json->play_token : 'ABCDEFGH';
-    $playurl = $head_httplive . '/playurl?playtype=live&protocol=hls&accesstoken=' . $accesstoken . '&programid=4200000' . $id . '&playtoken=' . $playtoken;
-    $m3u8 = getcurl($playurl);
-    echo preg_replace('/(http):\/\/([^\/]+)/i', $head_httplive, $m3u8);
-} elseif ($type == 'list') {
-    // 节目单
-    $date = isset($_GET['date']) ? $_GET['date'] : date('Y-m-d');
-    $time = time();
-    $json = getinfo_json($id, $accesstoken);
-    echo $json->chnl_name . " " . $date . " 节目单<br/>";
-    $list_url = 'http://slave.bfgd.com.cn/media/event/get_list?chnlid=4200000' . $id . '&pageidx=1&vcontrol=0&attachdesc=1&repeat=1&accesstoken=' . $accesstoken . '&starttime=' . strtotime($date) . '&endtime=' . strtotime('+1 day', strtotime($date)) . '&pagenum=100&flagposter=0';
-    $list_result = file_get_contents($list_url);
-    $list_json = json_decode($list_result);
-    $event_list = $list_json->event_list;
-    for ($x = 0; $x < count($event_list); $x++) {
-        $url = 'bfgd.php?type=back&start=' . date('YmdHis', $event_list[$x]->start_time) . '&end=' . date('YmdHis', $event_list[$x]->end_time) . '&event_id=' . $event_list[$x]->event_id;
-        $n = date('H:i', $event_list[$x]->start_time) . ' ' . $event_list[$x]->event_name;
-        if ($time > $event_list[$x]->end_time) {
-            echo "<a href='{$url}' title=''>$n</a><br/>";
-        } else {
-            echo $n . "<br/>";
-        }
-    }
-} elseif ($type == 'back') {
-    // 回看
-    header("ACCESS-CONTROL-ALLOW-ORIGIN:*");
-    $start = $_GET['start'];
-    $end = $_GET['end'];
-    $eventid = $_GET['event_id'];
-    $url = 'http://slave.bfgd.com.cn/media/event/get_info?accesstoken=' . $accesstoken . '&eventid=' . $eventid;
-    $result = file_get_contents($url);
-    $json = json_decode($result);
-    $_playtoken = $json->play_token;
-    $playurl = $head_httpstream . '/playurl?playtype=lookback&protocol=hls&starttime=' . $start . '&endtime=' . $end . '&accesstoken=' . $accesstoken . '&programid=' . $eventid . '&playtoken=' . $_playtoken;
-    $m3u8 = getcurl($playurl);
-    echo preg_replace('/(http):\/\/([^\/]+)/i', $head_httpstream, $m3u8);
+if (!array_key_exists($id, $channelMap)) {
+    http_response_code(404);
+    header('Content-Type: text/plain; charset=utf-8');
+    exit('頻道不存在');
 }
-?>
+
+$channelInfo = getChannelInfo($id);
+if (!$channelInfo) {
+    http_response_code(503);
+    header('Content-Type: text/plain; charset=utf-8');
+    exit('無法獲取頻道信息');
+}
+
+$playToken = $channelInfo->play_token ?? 'DEFAULT_TOKEN';
+$playUrl = getPlayUrl($id, $playToken);
+
+header("Access-Control-Allow-Origin: *");
+header('Content-Type: application/vnd.apple.mpegurl');
+readfile($playUrl);
