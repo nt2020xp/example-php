@@ -29,22 +29,23 @@ if ($_GET['token'] !== $SECRET_TOKEN) {
 // 格式: '频道ID' => [参数1, 参数2, 'tvg-id', '频道名称', '台标URL', '分组名称(可选)']
 $channels = [
   //新闻频道
-  '4gtv-4gtv009' => [2, 7, '中天新闻', '中天新闻', 'https://logo.doube.eu.org/中天新闻.png',''],
+ 
   '4gtv-4gtv072' => [1, 2, 'TVBS新闻', 'TVBS新闻台', 'https://logo.doube.eu.org/TVBS新闻.png',''],
   '4gtv-4gtv152' => [1, 6, '东森新闻台', '东森新闻', 'https://logo.doube.eu.org/东森新闻台.png',''],
   'litv-ftv13' => [1, 7, '民视新闻台', '民视新闻台', 'https://logo.doube.eu.org/民视新闻台.png',''],
-  '4gtv-4gtv075' => [1, 2, '镜电视新闻台', '镜新闻', 'https://logo.doube.eu.org/镜电视新闻台.png',''],
-  '4gtv-4gtv010' => [1, 6, '非凡新闻', '非凡新闻', 'https://logo.doube.eu.org/非凡新闻.png',''],
-  '4gtv-4gtv051' => [1, 2, '台视新闻台', '台视新闻', 'https://logo.doube.eu.org/台视新闻台.png',''],
+  '4gtv-4gtv009' => [2, 7, '中天新闻', '中天新闻', 'https://logo.doube.eu.org/中天新闻.png',''],
   '4gtv-4gtv052' => [1, 2, '华视新闻', '华视新闻', 'https://logo.doube.eu.org/华视新闻.png',''],
   '4gtv-4gtv074' => [1, 2, '中视新闻台', '中视新闻', 'https://logo.doube.eu.org/中视新闻台.png',''],
+  '4gtv-4gtv051' => [1, 2, '台视新闻台', '台视新闻', 'https://logo.doube.eu.org/台视新闻台.png',''],
   'litv-longturn14' => [1, 2, '寰宇新闻台', '寰宇新闻台', 'https://logo.doube.eu.org/寰宇新闻台.png',''],
-  '4gtv-4gtv156' => [1, 6, '寰宇新闻台湾台', '寰宇新闻台湾台', 'https://logo.doube.eu.org/寰宇新闻台湾台.png',''],
+  '4gtv-4gtv156' => [1, 6, '寰宇台湾台', '寰宇台湾台', 'https://logo.doube.eu.org/寰宇新闻台湾台.png',''],
+  '4gtv-4gtv075' => [1, 2, '镜电视新闻台', '镜新闻', 'https://logo.doube.eu.org/镜电视新闻台.png',''],
+  '4gtv-4gtv153' => [1, 6, '东森财经新闻台', '东森财经新闻', 'https://logo.doube.eu.org/东森财经新闻台.png',''],
+  '4gtv-4gtv010' => [1, 6, '非凡新闻', '非凡新闻', 'https://logo.doube.eu.org/非凡新闻.png',''],  
   'litv-ftv10' => [1, 7, '半岛国际新闻', '半岛新闻', 'https://logo.doube.eu.org/半岛国际新闻.png',''],
   'litv-ftv03' => [1, 7, '美国之音', '美国之音', 'https://logo.doube.eu.org/美国之音.png',''],
 
   //财经频道
-  '4gtv-4gtv153' => [1, 6, '东森财经新闻台', '东森财经新闻', 'https://logo.doube.eu.org/东森财经新闻台.png',''],
   '4gtv-4gtv048' => [1, 2, '非凡商业', '非凡商业台', 'https://logo.doube.eu.org/非凡商业.png',''],
   '4gtv-4gtv056' => [1, 2, '台视财经台', '台视财经', 'https://logo.doube.eu.org/台视财经台.png',''],
   '4gtv-4gtv104' => [1, 7, '第1商业台', '第1商业台', 'https://logo.doube.eu.org/第1商业台.png',''],
