@@ -30,9 +30,9 @@ if ($_GET['token'] !== $SECRET_TOKEN) {
 $channels = [
   //新闻频道
  
-  '4gtv-4gtv072' => [1, 2, 'TVBS新聞', 'TVBS新闻台', 'https://logo.doube.eu.org/TVBS新闻.png',''],
-  '4gtv-4gtv152' => [1, 6, '東森新闻', '东森新闻', 'https://logo.doube.eu.org/东森新闻台.png',''],
-  'litv-ftv13' => [1, 7, '民視新闻', '民视新闻', 'https://logo.doube.eu.org/民视新闻台.png',''],
+  '4gtv-4gtv072' => [1, 2, 'TVBS新聞', 'TVBS新聞', 'https://logo.doube.eu.org/TVBS新闻.png',''],
+  '4gtv-4gtv152' => [1, 6, '東森新聞', '東森新聞', 'https://logo.doube.eu.org/东森新闻台.png',''],
+  'litv-ftv13' => [1, 7, '民視新聞', '民視新聞', 'https://logo.doube.eu.org/民视新闻台.png',''],
   '4gtv-4gtv009' => [2, 7, '中天新聞', '中天新闻', 'https://logo.doube.eu.org/中天新闻.png',''],
   '4gtv-4gtv052' => [1, 2, '華視新聞', '华视新闻', 'https://logo.doube.eu.org/华视新闻.png',''],
   '4gtv-4gtv074' => [1, 2, '中視新聞', '中视新闻', 'https://logo.doube.eu.org/中视新闻台.png',''],
