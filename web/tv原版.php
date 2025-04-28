@@ -32,7 +32,7 @@ $channels = [
   '4gtv-4gtv009' => [2, 7, '中天新闻', '中天新闻', 'https://logo.doube.eu.org/中天新闻.png',''],
   '4gtv-4gtv072' => [1, 2, 'TVBS新闻', 'TVBS新闻台', 'https://logo.doube.eu.org/TVBS新闻.png',''],
   '4gtv-4gtv152' => [1, 6, '东森新闻台', '东森新闻', 'https://logo.doube.eu.org/东森新闻台.png',''],
-  'litv-ftv13' => [1, 7, '民视新闻台', '民视新闻台', 'https://logo.doube.eu.org/民视新闻台.png',''],
+  'litv-ftv13' => [1, 6, '民视新闻台', '民视新闻台', 'https://logo.doube.eu.org/民视新闻台.png',''],
   '4gtv-4gtv075' => [1, 2, '镜电视新闻台', '镜新闻', 'https://logo.doube.eu.org/镜电视新闻台.png',''],
   '4gtv-4gtv010' => [1, 6, '非凡新闻', '非凡新闻', 'https://logo.doube.eu.org/非凡新闻.png',''],
   '4gtv-4gtv051' => [1, 2, '台视新闻台', '台视新闻', 'https://logo.doube.eu.org/台视新闻台.png',''],
@@ -119,7 +119,7 @@ $channels = [
   '4gtv-4gtv016' => [1, 6, 'Globetrotter', 'Globetrotter', 'https://logo.doube.eu.org/Globetrotter.png',''],
   '4gtv-4gtv018' => [1, 6, '达文西频道', '达文西频道', 'https://logo.doube.eu.org/达文西频道.png',''],
   '4gtv-4gtv076' => [1, 2, '亚洲旅游台', '亚洲旅游台', 'https://logo.doube.eu.org/亚洲旅游台.png',''],
-  'litv-ftv07' => [1, 7, '民视旅游台', '民视旅游', 'https://logo.doube.eu.org/民视旅游台.png',''],
+  'litv-ftv07' => [1, 6, '民视旅游台', '民视旅游', 'https://logo.doube.eu.org/民视旅游台.png',''],
   'litv-longturn19' => [5, 2, 'Smart知识台', 'Smart知识台', 'https://logo.doube.eu.org/Smart知识台.png',''],
 
   //儿童/卡通频道
@@ -149,7 +149,7 @@ $base_url = "$protocol://$host";
 if (!$id) {
     header('Content-Type: text/plain; charset=utf-8');
     echo "litv頻道,#genre#\n";
-    echo "\n"; 
+    echo "\n";
     foreach ($channels as $key => $value) {
         $group = (isset($value[5]) && $value[5] !== '') ? $value[5] : '台湾频道';
         echo "$value[3],","$base_url/tv.php?token=" . urlencode($SECRET_TOKEN) . "&id=" . urlencode($key) . "\n";
