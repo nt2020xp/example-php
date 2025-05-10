@@ -2,7 +2,8 @@
 /*
 使用方法 litv.php?id=4gtv-4gtv001
 无参数时返回完整频道列表，格式：频道名称,https://ip/litv.php?id=频道ID
-https://1234.koyeb.app/litv.php
+https://xxx.koyeb.app/litv.php
+https://xxx.serv00.net/litv.php
 */
 header('Content-Type: text/plain; charset=utf-8');
 
@@ -16,8 +17,7 @@ $channels = [
     '4gtv-4gtv009' => ['中天新聞台', 2, 7],
     '4gtv-4gtv153' => ['東森財經台', 1, 2],
     'litv-longturn14' => ['寰宇新聞台', 4, 2],
-    '4gtv-4gtv156' => ['寰宇台灣台', 1, 6],
-    '4gtv-4gtv158' => ['寰宇財經台', 5, 2],    
+    '4gtv-4gtv156' => ['寰宇台灣台', 1, 6],     
     '4gtv-4gtv075' => ['鏡新聞', 1, 2],
     '4gtv-4gtv010' => ['非凡新聞台', 1, 6],
     '4gtv-4gtv048' => ['非凡商業台', 1, 2],
@@ -41,7 +41,7 @@ $channels = [
     '4gtv-4gtv044' => ['靖天卡通台', 1, 8],
     '4gtv-4gtv057' => ['靖洋卡通台', 1, 8],   
     'litv-longturn02' => ['龍華洋片台', 5, 2],
-    'litv-longturn03' => ['龍華電影台', 5, 6],
+    'litv-longturn03' => ['龍華電影台', 5, 2],
     'litv-longturn11' => ['龍華日韓台', 5, 2],
     'litv-longturn12' => ['龍華偶像台', 5, 2],
     'litv-longturn18' => ['龍華戲劇台', 5, 6],
@@ -60,6 +60,7 @@ $channels = [
     '4gtv-4gtv039' => ['八大綜藝台', 1, 7],   
     '4gtv-4gtv070' => ['愛爾達娛樂台', 1, 7], 
     '4gtv-4gtv049' => ['采昌影劇台', 1, 8],   
+    '4gtv-4gtv158' => ['寰宇財經台', 5, 2],   
     '4gtv-4gtv006' => ['豬哥亮歌廳秀', 1, 9],   
     '4gtv-4gtv013' => ['視納華仁紀實頻道', 1, 6],
     '4gtv-4gtv014' => ['時尚運動X', 1, 5],
@@ -70,7 +71,7 @@ $channels = [
     '4gtv-4gtv056' => ['台視財經', 1, 2],  
     '4gtv-4gtv059' => ['CLASSICA 古典樂', 1, 6],     
     '4gtv-4gtv073' => ['TVBS', 1, 2],  
-    '4gtv-4gtv077' => ['TRACE Sport Stars', 1, 7],
+    '4gtv-4gtv077' => ['TRACE Sport Stars', 1, 2],
     '4gtv-4gtv079' => ['ARIRANG阿里郎頻道', 1, 2],   
     '4gtv-4gtv082' => ['TRACE Urban', 1, 6],
     '4gtv-4gtv083' => ['Mezzo Live HD', 1, 6],
