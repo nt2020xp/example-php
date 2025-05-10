@@ -2,7 +2,8 @@
 /*
 使用方法 litv.php?id=4gtv-4gtv001
 无参数时返回完整频道列表，格式：频道名称,https://ip/litv.php?id=频道ID
-https://1234.koyeb.app/litv.php
+https://xxx.koyeb.app/litv.php
+https://xxx.serv00.net/litv.php
 */
 header('Content-Type: text/plain; charset=utf-8');
 
@@ -70,7 +71,7 @@ $channels = [
     '4gtv-4gtv056' => ['台視財經', 1, 2],  
     '4gtv-4gtv059' => ['CLASSICA 古典樂', 1, 6],     
     '4gtv-4gtv073' => ['TVBS', 1, 2],  
-    '4gtv-4gtv077' => ['TRACE Sport Stars', 1, 6],
+    '4gtv-4gtv077' => ['TRACE Sport Stars', 1, 2],
     '4gtv-4gtv079' => ['ARIRANG阿里郎頻道', 1, 2],   
     '4gtv-4gtv082' => ['TRACE Urban', 1, 6],
     '4gtv-4gtv083' => ['Mezzo Live HD', 1, 6],
