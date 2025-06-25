@@ -1,21 +1,17 @@
 <?php
 error_reporting(0);
-define('IS_PROXY', false); // 預設關閉代理，如需使用請設為 true 並配置 $proxy
+define('IS_PROXY', true);
 
-// 配置區域
-$proxy = "127.0.0.1:8888"; // 代理伺服器地址，僅在 IS_PROXY 為 true 時使用
+// config
+$channel = $_GET['channel'];
 $header = [
-    "User-Agent: okhttp/3.12.11",
-    "Accept: application/json"
+    "User-Agent: okhttp/3.12.11"
 ];
 
-// 檢查並獲取 channel 參數
-$channel = isset($_GET['channel']) ? trim($_GET['channel']) : '';
-if (empty($channel)) {
-    die(json_encode(['error' => '請提供 channel 參數'], JSON_UNESCAPED_UNICODE));
-}
-
-// 完整頻道列表
+//---------------------------------------------------------------------------------------------
+// channel info
+//$list = curl_get("https://api2.4gtv.tv/Web/GetPromoTemp/1", $header);
+//echo $list;
 $ch4g = array(
     "4gtv-4gtv039" => "八大综艺台",
     "4gtv-live089" => "三立财经新闻",
@@ -54,6 +50,8 @@ $ch4g = array(
     "litv-ftv10" => "半島電視台"
 );
 
+
+// from https://embed.4gtv.tv/HiNet/民視新聞台.html
 $ch4g2 = array(
     "31" => "民視新聞台",
     "292" => "東森新聞台",
@@ -147,177 +145,111 @@ $ch4g2 = array(
     "168" => "幸福空間居家台",
     "252" => "Global Trekker",
     "189" => "ARIRANG阿里郎頻道",
-    "237" => "愛爾達生活旅遊台"
-);
+    "237" => "愛爾達生活旅遊台");
 
-// 主邏輯
-try {
-    if (array_key_exists($channel, $ch4g2)) {
-        // 無需 VPN 的頻道處理
-        $url = "https://api2.4gtv.tv/Channel/GetChannel/" . urlencode($channel);
-        $data = curl_get($url, $header);
-        
-        if (strpos($data, 'Error:') === 0) {
-            throw new Exception($data);
-        }
 
-        $obj = json_decode($data, true);
-        if (json_last_error() !== JSON_ERROR_NONE || !isset($obj["Data"])) {
-            throw new Exception("無法解析頻道資料");
-        }
+// app (no VPN necessary)
+if (array_key_exists($channel, $ch4g2)) {
+    $url = "https://api2.4gtv.tv/Channel/GetChannel/" . $channel;
+    $data = curl_get($url, $header);
 
-        $obj = $obj["Data"];
-        $cno = $obj["fnID"] ?? null;
-        $cid = $obj["fs4GTV_ID"] ?? null;
+    $obj = json_decode($data, true)["Data"];
+    $cno = $obj["fnID"];
+    $cid = $obj["fs4GTV_ID"];
 
-        if (!$cno || !$cid) {
-            throw new Exception("無法獲取頻道ID");
-        }
+    // sample
+    // {"fnCHANNEL_ID":31,"fsASSET_ID":"litv-ftv13","fsDEVICE_TYPE":"mobile","clsIDENTITY_VALIDATE_ARUS":{"fsVALUE":""}}
+    $k = array("fsVALUE" => "");
+    $jarray = array(
+        "fnCHANNEL_ID" => $cno,
+        "fsASSET_ID" => $cid,
+        "fsDEVICE_TYPE" => "mobile",
+        "clsIDENTITY_VALIDATE_ARUS" => $k
+    );
+    $abc = json_encode($jarray, true);
 
-        $k = array("fsVALUE" => "");
-        $jarray = array(
-            "fnCHANNEL_ID" => $cno,
-            "fsASSET_ID" => $cid,
-            "fsDEVICE_TYPE" => "mobile",
-            "clsIDENTITY_VALIDATE_ARUS" => $k
-        );
-        $abc = json_encode($jarray);
+    // encryption
+    $key = "ilyB29ZdruuQjC45JhBBR7o2Z8WJ26Vg";
+    $iv = "JUMxvVMmszqUTeKn";
 
-        // 加密
-        $key = "ilyB29ZdruuQjC45JhBBR7o2Z8WJ26Vg";
-        $iv = "JUMxvVMmszqUTeKn";
-        $enc = openssl_encrypt($abc, "AES-256-CBC", $key, OPENSSL_RAW_DATA, $iv);
-        if ($enc === false) {
-            throw new Exception("加密失敗");
-        }
+    $enc = openssl_encrypt($abc, "AES-256-CBC", $key, OPENSSL_RAW_DATA, $iv);
+    $enc = base64_encode($enc);
 
-        $enc = base64_encode($enc);
-        $p = "value=" . urlencode($enc);
-        $resp = curl_post("https://api2.4gtv.tv//Channel/GetChannelUrl3", $p, $header);
+    // post
+    $p = "value=" . urlencode($enc);
+    $resp = curl_post("https://api2.4gtv.tv//Channel/GetChannelUrl3", $p, $header);
 
-        if (strpos($resp, 'Error:') === 0) {
-            throw new Exception($resp);
-        }
+    // decryption
+    $resp = json_decode($resp, true)["Data"];
+    $resp = openssl_decrypt(base64_decode($resp), "AES-256-CBC", $key, OPENSSL_RAW_DATA, $iv);
+    $playlist = json_decode($resp, true)["flstURLs"][0];
 
-        $resp = json_decode($resp, true);
-        if (!isset($resp["Data"])) {
-            throw new Exception("無法獲取串流URL");
-        }
 
-        $decrypted = openssl_decrypt(base64_decode($resp["Data"]), "AES-256-CBC", $key, OPENSSL_RAW_DATA, $iv);
-        if ($decrypted === false) {
-            throw new Exception("解密失敗");
-        }
+    // adjust resolution here
+    //echo $playlist;
+    header("Location: " . $playlist);
+} else if (array_key_exists($channel, $ch4g)) { // VPN necessary
+    $url = "https://app.4gtv.tv/Data/HiNet/GetURL.ashx?Type=LIVE&Content=" . $channel;
+    $vUrl = json_decode(findString(curl_get($url, $header), "{", "}"), true)['VideoURL'];
+    $hexkey = "VxzAfiseH0AbLShkQOPwdsssw5KyLeuv";
+    $hexiv = substr($vUrl, 0, 16);
+    $streamurl = openssl_decrypt(base64_decode(substr($vUrl, 16)), "AES-256-CBC", $hexkey, 1, $hexiv);
+    header("Location: " . $streamurl);
+} else {
+    echo "fuckoff";
+}
+exit();
 
-        $playlist = json_decode($decrypted, true)["flstURLs"][0] ?? null;
-        if (!$playlist) {
-            throw new Exception("無法解析播放列表");
-        }
 
-        header("Location: " . $playlist);
-        exit();
-    } elseif (array_key_exists($channel, $ch4g)) {
-        // 需要 VPN 的頻道處理
-        $url = "https://app.4gtv.tv/Data/HiNet/GetURL.ashx?Type=LIVE&Content=" . urlencode($channel);
-        $response = curl_get($url, $header);
-        
-        if (strpos($response, 'Error:') === 0) {
-            throw new Exception($response);
-        }
-
-        $jsonStr = findString($response, "{", "}");
-        if (empty($jsonStr)) {
-            throw new Exception("無法提取視頻URL資訊");
-        }
-
-        $jsonData = json_decode($jsonStr, true);
-        if (json_last_error() !== JSON_ERROR_NONE || !isset($jsonData['VideoURL'])) {
-            throw new Exception("無效的視頻URL數據");
-        }
-
-        $vUrl = $jsonData['VideoURL'];
-        $hexkey = "VxzAfiseH0AbLShkQOPwdsssw5KyLeuv";
-        $hexiv = substr($vUrl, 0, 16);
-        $encryptedData = base64_decode(substr($vUrl, 16));
-        
-        if ($encryptedData === false) {
-            throw new Exception("Base64 解碼失敗");
-        }
-
-        $streamurl = openssl_decrypt($encryptedData, "AES-256-CBC", $hexkey, OPENSSL_RAW_DATA, $hexiv);
-        if ($streamurl === false) {
-            throw new Exception("解密視頻URL失敗");
-        }
-
-        header("Location: " . $streamurl);
-        exit();
+//-----------------------------------------------------------------------------------
+// functions
+function curl_post($url, $postdata, $header)
+{
+    $curl = curl_init();
+    if (IS_PROXY) {
+        curl_setopt($curl, CURLOPT_PROXY, $GLOBALS ['proxy']);
+    }
+    curl_setopt($curl, CURLOPT_URL, $url);
+    curl_setopt($curl, CURLOPT_HEADER, 0);
+    curl_setopt($curl, CURLOPT_TIMEOUT, 20);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+    curl_setopt($curl, CURLOPT_POST, 1);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $postdata);
+    $data = curl_exec($curl);
+    if (curl_error($curl)) {
+        return "Error: " . curl_error($curl);
     } else {
-        throw new Exception("無效的頻道代碼");
+        curl_close($curl);
+        return $data;
     }
-} catch (Exception $e) {
-    header('Content-Type: application/json');
-    die(json_encode(['error' => $e->getMessage()], JSON_UNESCAPED_UNICODE));
 }
 
-// 函數定義
-function curl_post($url, $postdata, $header) {
+function curl_get($url, $header)
+{
     $curl = curl_init();
-    
-    if (IS_PROXY && isset($GLOBALS['proxy'])) {
-        curl_setopt($curl, CURLOPT_PROXY, $GLOBALS['proxy']);
-    }
-    
-    curl_setopt_array($curl, [
-        CURLOPT_URL => $url,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT => 30,
-        CURLOPT_SSL_VERIFYPEER => false,
-        CURLOPT_SSL_VERIFYHOST => false,
-        CURLOPT_HTTPHEADER => $header,
-        CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => $postdata,
-        CURLOPT_ENCODING => '',
-    ]);
-    
+    curl_setopt($curl, CURLOPT_URL, $url);
+    curl_setopt($curl, CURLOPT_HEADER, 0);
+    curl_setopt($curl, CURLOPT_TIMEOUT, 50);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+    curl_setopt($curl, CURLOPT_ENCODING, '');
     $data = curl_exec($curl);
-    
-    if (curl_errno($curl)) {
+    if (curl_error($curl)) {
         return "Error: " . curl_error($curl);
+    } else {
+        curl_close($curl);
+        return $data;
     }
-    
-    curl_close($curl);
-    return $data;
 }
 
-function curl_get($url, $header) {
-    $curl = curl_init();
-    
-    curl_setopt_array($curl, [
-        CURLOPT_URL => $url,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT => 30,
-        CURLOPT_SSL_VERIFYPEER => false,
-        CURLOPT_SSL_VERIFYHOST => false,
-        CURLOPT_HTTPHEADER => $header,
-        CURLOPT_ENCODING => '',
-    ]);
-    
-    $data = curl_exec($curl);
-    
-    if (curl_errno($curl)) {
-        return "Error: " . curl_error($curl);
-    }
-    
-    curl_close($curl);
-    return $data;
-}
-
-function findString($str, $start, $end) {
+function findString($str, $start, $end)
+{
     $from_pos = strpos($str, $start);
-    if ($from_pos === false) return '';
-    
-    $end_pos = strpos($str, $end, $from_pos + strlen($start));
-    if ($end_pos === false) return '';
-    
+    $end_pos = strpos($str, $end);
     return substr($str, $from_pos, ($end_pos - $from_pos + 1));
 }
