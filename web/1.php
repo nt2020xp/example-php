@@ -97,7 +97,7 @@ $channels = [
     'litv-longturn10' => ['博斯無限台', 5, 2],    
     'litv-longturn13' => ['博斯無限二台', 4, 2],  
     'litv-longturn20' => ['ELTV生活英語台', 5, 6],
-    '4gtv-4gtv016' => ['韓國娛樂台 KMTV', 5, 6]
+    '4gtv-4gtv016' => ['韓國娛樂台 KMTV', 1, 6]
 ];
 
 // 获取当前URL的基础部分
