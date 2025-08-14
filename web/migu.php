@@ -1,28 +1,4 @@
 <?php
-
-// 先检查 cache/cache_{id}.json 是否存在，且时间未超过 CACHE_TIMEOUT（5分钟）。
-// 如果缓存有效，直接返回缓存的 m3u8 地址。
-// 如果缓存无效，则请求 API，并存入缓存。
-// 异常处理
-
-// 增加 isset($n[$id]) 检测，防止 id 不存在时报错。
-// 检查 API 返回的数据是否正确，避免解析 null 时报错。
-// 优化 generateRandomString()
-
-// 直接使用 str_shuffle() 生成随机字符串，性能更优。
-
-// 运行逻辑
-// 1.首次访问
-// 没有缓存 → 请求 API → 解析 URL → 存入缓存 → 返回播放地址。
-// 2.后续访问
-// 在 5 分钟内使用缓存，避免重复请求 API。
-// 超过 5 分钟后自动刷新缓存。
-
-// 群 https://t.me/IPTV_9999999
-// https://t.me/livednowgroup/379744
-
-
-
 error_reporting(0);
 
 // 缓存目录
