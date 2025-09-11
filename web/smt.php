@@ -3,38 +3,28 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1); // 调试时显示错误
 header('Content-Type: text/plain; charset=utf-8');
 date_default_timezone_set("Asia/Shanghai");
+// session_start(); //不使用session
 
 // 核心配置
 const CONFIG = [
     'upstream'   => [
     'http://198.16.100.186:8278/',
-    'http://50.7.92.106:8278/',
+    'http://50.7.92.106:8278/', 
     'http://50.7.234.10:8278/',
     'http://50.7.220.170:8278/',
     'http://67.159.6.34:8278/'],
     'list_url'   => 'https://cdn.jsdelivr.net/gh/hostemail/cdn@main/data/smart.txt',
-    'backup_url' => 'https://cdn.jsdelivr.net/gh/hostemail/cdn@main/data/smart1.txt',
-    'token_ttl'  => 2400, // 40分钟有效期
-    'cache_ttl'  => 3600, // 频道列表缓存1小时
-    'fallback'   => 'http://vjs.zencdn.net/v/oceans.mp4',
+    'backup_url' => 'https://cdn.jsdelivr.net/gh/hostemail/cdn@main/data/smart1.txt', 
+    'token_ttl'  => 2400,  // 40分钟有效期
+    'cache_ttl'  => 3600,  // 频道列表缓存1小时
+    'fallback'   => 'http://vjs.zencdn.net/v/oceans.mp4', 
     'clear_key'  => 'leifeng'
 ];
 
 // 获取当前轮询的上游服务器
 function getUpstream() {
-    $upstreams = CONFIG['upstream'];
-
-    // 尝试使用 APCu 实现跨请求的轮询
-    if (extension_loaded('apcu')) {
-        $key = 'upstream_index';
-        $index = (int) (apcu_fetch($key) ?: 0);
-        $current = $upstreams[$index % count($upstreams)];
-        apcu_store($key, $index + 1);
-        return $current;
-    }
-
-    // 如果没有 APCu，则回退到简单的静态变量轮询 (仅对单次请求有效)
     static $index = 0;
+    $upstreams = CONFIG['upstream'];
     $current = $upstreams[$index % count($upstreams)];
     $index++;
     return $current;
@@ -54,20 +44,16 @@ try {
     exit("系统维护中，请稍后重试\n错误详情：" . $e->getMessage());
 }
 
-// 获取远端文件，使用cURL并进行错误检查
-function fetch_remote_file($url, $timeout = 5) {
+function fetch_remote_file($url, $timeout = 5)
+{
     $ch = curl_init($url);
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_FOLLOWLOCATION => true,
         CURLOPT_CONNECTTIMEOUT => $timeout,
         CURLOPT_TIMEOUT => $timeout,
-        CURLOPT_SSL_VERIFYPEER => false, // 简化配置，避免自签证书问题
-        CURLOPT_HTTPHEADER => [
-            'Cache-Control: no-cache',
-            "CLIENT-IP: 127.0.0.1",
-            "X-FORWARDED-FOR: 127.0.0.1"
-        ]
+        CURLOPT_SSL_VERIFYPEER => true, // 如果有自签证书，可以设为 false
+        CURLOPT_HTTPHEADER => ['Cache-Control: no-cache']
     ]);
 
     $response = curl_exec($ch);
@@ -75,14 +61,14 @@ function fetch_remote_file($url, $timeout = 5) {
     if (curl_errno($ch)) {
         $err = curl_error($ch);
         curl_close($ch);
-        throw new RuntimeException("CURL 请求失败: $err (URL: $url)");
+        throw new RuntimeException("CURL 请求失败: $err");
     }
 
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
 
     if ($http_code >= 400) {
-        throw new RuntimeException("远程服务器返回 HTTP $http_code 错误 (URL: $url)");
+        throw new RuntimeException("远程服务器返回 HTTP $http_code 错误");
     }
 
     return $response;
@@ -118,7 +104,12 @@ function clearCache() {
     } catch (Exception $e) {
         $results[] = '⚠️ 列表重建失败: ' . $e->getMessage();
     }
-    
+    /* 不使用session
+    $_SESSION = [];
+    if (session_destroy()) {
+        $results[] = '✅ Session已销毁';
+    }
+    */
     header('Cache-Control: no-store');
     exit(implode("\n", $results));
 }
@@ -190,14 +181,13 @@ function getChannelList($forceRefresh = false) {
             continue;
         }
 
-        $parts = explode(',', $line);
-        $name = trim($parts[0]);
-
         $id = null;
         if (preg_match('/\/\/:id=(\w+)/', $line, $m)) {
             $id = $m[1];
+            $name = trim(explode(',', $line)[0]); // 修复括号
         } elseif (preg_match('/[?&]id=([^&]+)/', $line, $m)) {
             $id = $m[1];
+            $name = trim(explode(',', $line)[0]); // 修复括号
         }
 
         if ($id) {
@@ -228,10 +218,23 @@ function fetchWithRetry($url, $maxRetries = 3) {
     
     for ($i = 0; $i < $maxRetries; $i++) {
         try {
-            $raw = fetch_remote_file($url);
+            $ctx = stream_context_create([
+                'http' => [
+                    'timeout' => 5,
+                    'header' => "User-Agent: Mozilla/5.0\r\n"
+                ],
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false
+                ]
+            ]);
+            
+            $raw = @fetch_remote_file($url, false, $ctx);
             if ($raw !== false) {
                 return $raw;
             }
+            $lastError = error_get_last()['message'] ?? '未知错误';
+            
         } catch (Exception $e) {
             $lastError = $e->getMessage();
         }
@@ -259,7 +262,36 @@ function handleChannelRequest() {
     }
 }
 
-// Token管理V2:无session
+/* Token管理V1:基于session 
+function manageToken() {
+    $token = $_GET['token'] ?? '';
+    
+    if (empty($_SESSION['token']) || 
+        !hash_equals($_SESSION['token'], $token) || 
+        (time() - $_SESSION['token_time']) > CONFIG['token_ttl']) {
+        
+        $token = bin2hex(random_bytes(16));
+        $_SESSION = [
+            'token'      => $token,
+            'token_time' => time()
+        ];
+        
+        if (isset($_GET['ts'])) {
+            $url = getBaseUrl() . '/' . basename(__FILE__) . '?' . http_build_query([
+                'id'    => $_GET['id'],
+                'ts'    => $_GET['ts'],
+                'token' => $token
+            ]);
+            header("Location: $url");
+            exit();
+        }
+    }
+    
+    return $token;
+}
+*/
+
+// Token管理V2:无session 
 function manageToken() {
     $token = $_GET['token'] ?? '';
     
@@ -300,49 +332,65 @@ function validateToken($token) {
 
 // 生成M3U8播放列表
 function generateM3U8($channelId, $token) {
-    try {
-        $upstream = getUpstream();
-        $authUrl = $upstream. "$channelId/playlist.m3u8?" . http_build_query([
-            'tid'  => 'mc42afe745533',
-            'ct'   => intval(time() / 150),
-            'tsum' => md5("tvata nginx auth module/$channelId/playlist.m3u8mc42afe745533" . intval(time() / 150))
-        ]);
-        
-        $content = fetch_remote_file($authUrl);
-        
-        $baseUrl = getBaseUrl() . '/' . basename(__FILE__);
-        $content = preg_replace_callback('/(\S+\.ts)/', function($m) use ($baseUrl, $channelId, $token) {
-            return "$baseUrl?id=" . urlencode($channelId) . "&ts=" . urlencode($m[1]) . "&token=" . urlencode($token);
-        }, $content);
-        
-        header('Content-Type: application/vnd.apple.mpegurl');
-        header('Content-Disposition: inline; filename="' . $channelId . '.m3u8"');
-        echo $content;
-    } catch (Exception $e) {
-        // 如果获取失败，则重定向到备用地址
+    $upstream = getUpstream();
+    $authUrl = $upstream. "$channelId/playlist.m3u8?" . http_build_query([
+        'tid'  => 'mc42afe745533',
+        'ct'   => intval(time() / 150),
+        'tsum' => md5("tvata nginx auth module/$channelId/playlist.m3u8mc42afe745533" . intval(time() / 150))
+    ]);
+    
+    $content = fetchUrl($authUrl);
+    if (strpos($content, '404 Not Found') !== false) {
         header("Location: " . CONFIG['fallback']);
         exit();
     }
+    
+    $baseUrl = getBaseUrl() . '/' . basename(__FILE__);
+    $content = preg_replace_callback('/(\S+\.ts)/', function($m) use ($baseUrl, $channelId, $token) {
+        return "$baseUrl?id=" . urlencode($channelId) . "&ts=" . urlencode($m[1]) . "&token=" . urlencode($token);
+    }, $content);
+    
+    header('Content-Type: application/vnd.apple.mpegurl');
+    header('Content-Disposition: inline; filename="' . $channelId . '.m3u8"');
+    echo $content;
 }
 
 // 代理TS流
 function proxyTS($channelId, $tsFile) {
-    try {
-        $upstream = getUpstream();
-        $url = $upstream . "$channelId/$tsFile";
-        $data = fetch_remote_file($url);
-        
-        header('Content-Type: video/MP2T');
-        header('Content-Length: ' . strlen($data));
-        echo $data;
-    } catch (Exception $e) {
+    $upstream = getUpstream();
+    $url = $upstream . "$channelId/$tsFile";
+    $data = fetchUrl($url);
+    
+    if ($data === null) {
         header('HTTP/1.1 404 Not Found');
         exit();
     }
+    
+    header('Content-Type: video/MP2T');
+    header('Content-Length: ' . strlen($data));
+    echo $data;
+}
+
+// 通用URL获取
+function fetchUrl($url) {
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER     => ["CLIENT-IP: 127.0.0.1", "X-FORWARDED-FOR: 127.0.0.1"],
+        CURLOPT_TIMEOUT        => 5,
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_FOLLOWLOCATION => true
+    ]);
+    
+    $data = curl_exec($ch);
+    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    
+    return $code == 200 ? $data : null;
 }
 
 // 获取基础URL
 function getBaseUrl() {
-    return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')
-               . "://$_SERVER[HTTP_HOST]";
+    return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') 
+           . "://$_SERVER[HTTP_HOST]";
 }
