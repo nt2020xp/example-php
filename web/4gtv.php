@@ -191,7 +191,7 @@
    		$m3u8=$current;
 		}
 	elseif(isset($m[$id])){
-		$burl='http://192.168.0.86:5000';
+		$burl='https://2025.koyeb.app';
 		$url=$burl.'/4gtv/'.$m[$id];
 		$url=curl_request($url,1,0);
 		$url=explode("\n", $url)[6];
@@ -224,7 +224,7 @@
 		curl_setopt($ch, CURLOPT_HEADER, $taga);
 		if($tagb==1){
 			curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
-        			curl_setopt($ch, CURLOPT_PROXY, "http://192.168.0.83:7890");
+        			curl_setopt($ch, CURLOPT_PROXY, "https://2025.koyeb.app");
 			}
 		$out = curl_exec ( $ch );
 		curl_close ( $ch );
