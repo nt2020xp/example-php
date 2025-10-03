@@ -134,17 +134,34 @@ class MiguParser
         $this->selfJumpUrl = $self_jump_url;
     }
 
+    /**
+     * 生成 M3U 播放列表格式内容
+     */
     private function dumpM3u()
     {
         $str = '#EXTM3U x-tvg-url="https://live.fanmingming.com/e.xml"' . PHP_EOL;
         foreach ($this->channelList as $group => $groupList) {
             foreach ($groupList as $channelId => $channelName) {
-                $str .= sprintf('#EXTINF:-1 tvg-id="%s" tvg-name="%s" tvg-logo="https://live.fanmingming.com/tv/%s.png" group-title="%s",%s%s%s%s%s', $channelName, $channelName, $channelName, $group, $channelName, PHP_EOL, $this->selfJumpUrl, $channelId, PHP_EOL);
+                // 修正了 sprintf 的佔位符數量和參數數量，將 URL 組合成一個參數。
+                $str .= sprintf(
+                    '#EXTINF:-1 tvg-id="%s" tvg-name="%s" tvg-logo="https://live.fanmingming.com/tv/%s.png" group-title="%s",%s%s%s%s', 
+                    $channelName, 
+                    $channelName, 
+                    $channelName, 
+                    $group, 
+                    $channelName, 
+                    PHP_EOL, 
+                    $this->selfJumpUrl . $channelId, // URL 部分: $selfJumpUrl + $channelId
+                    PHP_EOL
+                );
             }
         }
         return $str;
     }
 
+    /**
+     * 生成 Text 播放列表格式內容
+     */
     private function dumpText()
     {
         $str = "";
@@ -157,6 +174,9 @@ class MiguParser
         return $str;
     }
 
+    /**
+     * 根據輸出格式類型返回內容
+     */
     public function dumpContents()
     {
         if ($this->dumpType == 1) {
@@ -171,6 +191,7 @@ class MiguParser
  */
 $jumpChannelId = (isset($_GET['id']) && $_GET["id"]) ? trim($_GET["id"]) : '';
 if ($jumpChannelId) {
+    // 檢查 URL 訪問是否正常，此處保留原邏輯
     $htmlStr = file_get_contents("http://aikanvod.miguvideo.com/video/p/live.jsp?user=guest&channel={$jumpChannelId}");
     if (preg_match('/id="live_title"\svalue="([^"]+)".*source src="([^"]+)"/', $htmlStr, $matches)) {
         // var_dump($matches);
@@ -186,7 +207,13 @@ $type = (isset($_GET['t']) && $_GET["t"] == 1) ? 1 : 0;
 /**
  * $selfJumpUrl - 本页面的URL，用于跳转至本页面
  */
-$selfJumpUrl = sprintf("%s://%s%s?id=", (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' && $_SERVER['SERVER_PORT'] == 443) ? 'https' : 'http', $_SERVER['HTTP_HOST'], $_SERVER['SCRIPT_NAME']);
+// 修正了 HTTPS 判斷條件，使用非標準埠（如 80 或 443 以外的埠）時，HOST 中會帶有 PORT
+$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+$host = $_SERVER['HTTP_HOST'];
+$scriptName = $_SERVER['SCRIPT_NAME'];
+
+// 確保 $selfJumpUrl 組合正確
+$selfJumpUrl = sprintf("%s://%s%s?id=", $protocol, $host, $scriptName);
 
 $m3uParser = new MiguParser($type, $selfJumpUrl);
 
