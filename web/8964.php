@@ -67,27 +67,8 @@ $channels = [
     '4gtv-4gtv013' => ['視納華仁紀實頻道', 1, 6],
     '4gtv-4gtv070' => ['愛爾達娛樂台', 1, 7],
     '4gtv-4gtv018' => ['達文西頻道', 1, 8],    
-    'litv-ftv15' => ['影迷數位紀實台', 1, 7],    
-    '4gtv-4gtv006' => ['豬哥亮歌廳秀', 1, 9],      
-    '4gtv-4gtv014' => ['時尚運動X', 1, 5],    
-    '4gtv-4gtv043' => ['客家電視台', 1, 9],           
-    '4gtv-4gtv053' => ['GINX Esports TV', 1, 8],       
-    '4gtv-4gtv059' => ['CLASSICA 古典樂', 1, 6],      
-    '4gtv-4gtv077' => ['TRACE Sport Stars', 1, 2],
-    '4gtv-4gtv079' => ['ARIRANG阿里郎頻道', 1, 2],   
-    '4gtv-4gtv082' => ['TRACE Urban', 1, 6],
-    '4gtv-4gtv083' => ['Mezzo Live HD', 1, 6],
+    'litv-ftv15' => ['影迷數位紀實台', 1, 7],      
     '4gtv-4gtv110' => ['Pet Club TV', 1, 2],
-    '4gtv-4gtv084' => ['國會頻道1台', 1, 6],
-    '4gtv-4gtv085' => ['國會頻道2台', 1, 5],
-    '4gtv-4gtv101' => ['智林體育台', 1, 5],
-    '4gtv-4gtv102' => ['東森購物1台', 1, 6],
-    '4gtv-4gtv103' => ['東森購物2台', 1, 6],
-    '4gtv-4gtv104' => ['第1商業台', 1, 7],    
-    'litv-ftv03' => ['VOA美國之音', 1, 7],   
-    'litv-ftv10' => ['半島國際新聞台', 1, 7],       
-    'litv-ftv16' => ['好消息', 1, 2],
-    'litv-ftv17' => ['好消息2台', 1, 2],   
     'litv-longturn04' => ['博斯魅力台', 5, 6],
     'litv-longturn05' => ['博斯高球台', 5, 2],
     'litv-longturn06' => ['博斯高球二台', 5, 2],
@@ -96,8 +77,7 @@ $channels = [
     'litv-longturn09' => ['博斯網球台', 5, 2],
     'litv-longturn10' => ['博斯無限台', 5, 2],    
     'litv-longturn13' => ['博斯無限二台', 4, 2],  
-    'litv-longturn20' => ['ELTV生活英語台', 5, 6],
-    '4gtv-4gtv016' => ['韓國娛樂台 KMTV', 1, 6]
+       '4gtv-4gtv016' => ['韓國娛樂台 KMTV', 1, 6]
 ];
 
 // 获取当前URL的基础部分
@@ -145,4 +125,3 @@ header('Content-Disposition: inline; filename='.$id.'.m3u8');
 header('Content-Length: ' . strlen($current));
 echo $current;
 ?>
-
