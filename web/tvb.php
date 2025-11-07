@@ -1,51 +1,35 @@
-<?php
-
-$url = 'https://www.faintv.com/channel/17767';
-$output_file = 'tvb_stream_source.txt'; // 儲存直播源的檔案
-
-// --- 1. 使用 cURL 獲取網頁內容 ---
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-// 模擬瀏覽器行為，避免被阻擋
-curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
-curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // 跟隨重定向
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // 如果網站是HTTPS，可能需要禁用SSL檢查 (生產環境不建議)
-
-$html = curl_exec($ch);
-
-if (curl_errno($ch)) {
-    $error = 'cURL 錯誤: ' . curl_error($ch);
-    file_put_contents($output_file, date('Y-m-d H:i:s') . ' - ' . $error . "\n", FILE_APPEND);
-    curl_close($ch);
-    exit;
-}
-
-curl_close($ch);
-
-// --- 2. 解析 HTML 內容提取直播源 ---
-$live_stream_url = '';
-
-// *** 這裡需要根據網頁實際結構來修改！***
-// 直播源通常是 m3u8 格式，你可以嘗試使用正則表達式來查找。
-// 範例：尋找所有以 http 或 https 開頭，以 .m3u8 結尾的連結
-if (preg_match('/(https?:\/\/[^\s\'"]+\.m3u8)/i', $html, $matches)) {
-    $live_stream_url = $matches[1];
-} 
-// 或者，如果直播源是藏在某個特定的 HTML 標籤或 JavaScript 變量中，
-// 您需要使用 DOMDocument 或更精確的正則表達式來提取。
-// **********************************
-
-// --- 3. 儲存結果 ---
-if (!empty($live_stream_url)) {
-    $content_to_save = date('Y-m-d H:i:s') . ' - 成功抓取: ' . $live_stream_url . "\n";
-} else {
-    $content_to_save = date('Y-m-d H:i:s') . ' - 失敗: 未找到直播源。' . "\n";
-}
-
-// 將結果寫入檔案，使用 FILE_APPEND 模式附加到文件末尾
-file_put_contents($output_file, $content_to_save, FILE_APPEND);
-
-echo "抓取完成，請檢查 $output_file 檔案。\n";
-
-?>
+<？php
+/*
+* GeJI恩山論壇
+*.php？id=0 無線新聞台[1280x720]
+*.php？id=1 無線財*體育資訊台[1280x720]
+*.php？id=2 無線新聞台·海外版[1920x1080]
+*.php？id=3 無線財*體育資訊台·網络版[1920x1080]
+*.php？id=4 事件直播1台[1280x720]
+*.php？id=5 事件直播2台[1280x720]
+*.php？id=6 無線新聞台[max1920x1080，min960x360，多畫質多音軌DIYP不支援]
+*.php？id=7 無線財*體育資訊台[max1920x1080，min960x360，多畫質多音軌DIYP不支援]
+*.php？id=8 事件直播1台[max1920x1080，min960x360，多畫質多音軌DIYP不支援]
+*.php？id=9 事件直播2台[max1920x1080，min960x360，多畫質多音軌DIYP不支援]
+*/
+$id = $_GET['id'];
+$ids = ['C'，'A'，'I-NEWS'，'I-FINA'，'NEVT1'，'NEVT2'，'C'，'A'，'NEVT1'，'NEVT2'];
+$header[] = '用戶端 IP：'.$_SERVER['REMOTE_ADDR'];
+$header[] = 'X-FORWARDED-FOR：'.$_SERVER['REMOTE_ADDR'];
+$ch = curl_init（）;
+curl_setopt（$ch，CURLOPT_URL，'https：//inews-api.tvb.com/news/checkout/live/hd/ott_'.$ids[$id].'_h264？profile=safari'）;
+curl_setopt（$ch，CURLOPT_HTTPHEADER，$header）;
+curl_setopt（$ch，CURLOPT_RETURNTRANSFER，1）;
+curl_setopt（$ch，CURLOPT_SSL_VERIFYPEER，false）;
+curl_setopt（$ch，CURLOPT_SSL_VERIFYHOST，false）;
+$data = curl_exec（$ch）;
+curl_close（$ch）;
+$json = json_decode（$data）;
+if（$id == '0' || $id == '1' || $id == '4' || $id == '5'） {
+$url = $json->內容->url->高清;
+} else if（$id == '2' || $id == '3'） {
+$url = preg_replace（'/&p=（.*？）$/'，'&p=3000'，$json->內容->url->高清）;
+} 否則 {
+$url = preg_replace（'/&p=（.*？）$/'，''，$json->content->url->hd）;
+};
+標頭（'位置：'.$url）;
