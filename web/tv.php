@@ -162,7 +162,7 @@ if (!$id) {
         $tvgId = $v[2];
         $name  = $v[3];
         $logo  = $v[4];
-        $url   = "{$base_url}/litv.php?token=" . urlencode($GLOBALS['SECRET_TOKEN']) . "&id=" . urlencode($key);
+        $url   = "{$base_url}/tv.php?token=" . urlencode($GLOBALS['SECRET_TOKEN']) . "&id=" . urlencode($key);
         echo "#EXTINF:-1 tvg-id=\"{$tvgId}\" tvg-name=\"{$name}\" tvg-logo=\"{$logo}\" group-title=\"{$group}\",{$name}\n";
         echo "{$url}\n";
     }
