@@ -6,8 +6,8 @@
  * 优化：GPT-5
  * 最后修改：2025-11-17
  * 功能说明：
- * - http://yourserver/litv.php? → 返回完整 M3U 列表
- * - http://yourserver/litv.php?id=频道ID → 返回指定频道的 M3U8 播放列表
+ * - http://yourserver/tv.php? → 返回完整 M3U 列表
+ * - http://yourserver/tv.php?id=频道ID → 返回指定频道的 M3U8 播放列表
  */
 
 header('Content-Type: text/plain; charset=utf-8');
@@ -163,7 +163,7 @@ if (!$id) {
         $name  = $v[3];
         $logo  = $v[4];
         // 注意：這裡移除了 URL 中的 token 參數
-        $url   = "{$base_url}/litv.php?id=" . urlencode($key);
+        $url   = "{$base_url}/tv.php?id=" . urlencode($key);
         echo "#EXTINF:-1 tvg-id=\"{$tvgId}\" tvg-name=\"{$name}\" tvg-logo=\"{$logo}\" group-title=\"{$group}\",{$name}\n";
         echo "{$url}\n";
     }
