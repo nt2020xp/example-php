@@ -6,8 +6,8 @@
  * 优化：GPT-5
  * 最后修改：2025-11-17
  * 功能说明：
- * - http://yourserver/tv.php? → 返回完整 M3U 列表
- * - http://yourserver/tv.php?id=频道ID → 返回指定频道的 M3U8 播放列表
+ * - http://yourserver/litv.php? → 返回完整 M3U 列表
+ * - http://yourserver/litv.php?id=频道ID → 返回指定频道的 M3U8 播放列表
  */
 
 header('Content-Type: text/plain; charset=utf-8');
@@ -26,17 +26,17 @@ $DEFAULT_GROUP = '台湾频道';
 // ========== 频道映射表 ==========
 $channels = [
 	//新闻频道
+	'4gtv-4gtv009' => [2, 7, '中天新闻', '中天新闻', 'https://logo.doube.eu.org/中天新闻.png',''],
 	'4gtv-4gtv072' => [1, 2, 'TVBS新闻', 'TVBS新闻台', 'https://logo.doube.eu.org/TVBS新闻.png',''],
 	'4gtv-4gtv152' => [1, 6, '东森新闻台', '东森新闻', 'https://logo.doube.eu.org/东森新闻台.png',''],
 	'litv-ftv13' => [1, 7, '民视新闻台', '民视新闻台', 'https://logo.doube.eu.org/民视新闻台.png',''],
-	'4gtv-4gtv009' => [2, 7, '中天新闻', '中天新闻', 'https://logo.doube.eu.org/中天新闻.png',''],
-	'4gtv-4gtv052' => [1, 2, '华视新闻', '华视新闻', 'https://logo.doube.eu.org/华视新闻.png',''],
-	'4gtv-4gtv074' => [1, 2, '中视新闻台', '中视新闻', 'https://logo.doube.eu.org/中视新闻台.png',''],
-	'4gtv-4gtv051' => [1, 2, '台视新闻台', '台视新闻', 'https://logo.doube.eu.org/台视新闻台.png',''],
-	'litv-longturn14' => [1, 2, '寰宇新闻台', '寰宇新闻台', 'https://logo.doube.eu.org/寰宇新闻台.png',''],
-	'4gtv-4gtv156' => [1, 6, '寰宇新闻台湾台', '寰宇新闻台湾台', 'https://logo.doube.eu.org/寰宇新闻台湾台.png',''],
 	'4gtv-4gtv075' => [1, 2, '镜电视新闻台', '镜新闻', 'https://logo.doube.eu.org/镜电视新闻台.png',''],
 	'4gtv-4gtv010' => [1, 6, '非凡新闻', '非凡新闻', 'https://logo.doube.eu.org/非凡新闻.png',''],
+	'4gtv-4gtv051' => [1, 2, '台视新闻台', '台视新闻', 'https://logo.doube.eu.org/台视新闻台.png',''],
+	'4gtv-4gtv052' => [1, 2, '华视新闻', '华视新闻', 'https://logo.doube.eu.org/华视新闻.png',''],
+	'4gtv-4gtv074' => [1, 2, '中视新闻台', '中视新闻', 'https://logo.doube.eu.org/中视新闻台.png',''],
+	'litv-longturn14' => [1, 2, '寰宇新闻台', '寰宇新闻台', 'https://logo.doube.eu.org/寰宇新闻台.png',''],
+	'4gtv-4gtv156' => [1, 6, '寰宇新闻台湾台', '寰宇新闻台湾台', 'https://logo.doube.eu.org/寰宇新闻台湾台.png',''],
 	'litv-ftv10' => [1, 7, '半岛国际新闻', '半岛新闻', 'https://logo.doube.eu.org/半岛国际新闻.png',''],
 	'litv-ftv03' => [1, 7, '美国之音', '美国之音', 'https://logo.doube.eu.org/美国之音.png',''],
 
@@ -163,7 +163,7 @@ if (!$id) {
         $name  = $v[3];
         $logo  = $v[4];
         // 注意：這裡移除了 URL 中的 token 參數
-        $url   = "{$base_url}/tv.php?id=" . urlencode($key);
+        $url   = "{$base_url}/litv.php?id=" . urlencode($key);
         echo "#EXTINF:-1 tvg-id=\"{$tvgId}\" tvg-name=\"{$name}\" tvg-logo=\"{$logo}\" group-title=\"{$group}\",{$name}\n";
         echo "{$url}\n";
     }
