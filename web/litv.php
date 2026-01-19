@@ -1,110 +1,139 @@
-
 <?php
-/*
-使用方法 litv.php?id=4gtv-4gtv001
-无参数时返回完整频道列表，格式：频道名称,https://ip/litv.php?id=频道ID
-https://xxx.koyeb.app/litv.php
-https://xxx.serv00.net/litv.php
-*/
+//脚本生成时间：2026-01-09 04:02:59
 header('Content-Type: text/plain; charset=utf-8');
+error_reporting(0);
+function creat_m3u8($id,$qlt,$alt){
+    $timestamp = intval(time()/4-355017628);
+    $t=$timestamp*4;
+    $m3u8 = "#EXTM3U\n";
+    $m3u8.= "#EXT-X-VERSION:3\n";
+    $m3u8.= "#EXT-X-TARGETDURATION:4\n";
+    $m3u8.= "#EXT-X-MEDIA-SEQUENCE:{$timestamp}\n";
+    for ($i=0; $i<10; $i++) {
+        $m3u8.= "#EXTINF:4,\n";
+        $m3u8.="https://ntd-tgc.cdn.hinet.net/live/pool/{$id}/litv-pc/{$id}-avc1_6000000={$qlt}-mp4a_134000_zho={$alt}-begin={$t}0000000-dur=40000000-seq={$timestamp}.ts\n";
+        $timestamp = $timestamp+1;
+        $t=$t+4;
+    }
+    return $m3u8;
+}
+function get_path() {
+    $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
+    return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'];
+}
+function creat_m3u($n){
+    $m3u="#EXTM3U\n";
+    $local_path = get_path();
+    foreach ($n as $id => $key ){
+        $m3u.='#EXTINF:-1 tvg-id="'.$id.'" tvg-name="'.$key[2].'" group-title="LITV系列",'.$key[2]."\n{$local_path}?id={$id}\n";
+    }
+    return $m3u;
+}
+$n = [
+//以下参数为脚本每4小时自动生成一次
+"4gtv-4gtv003"=>[1,7,"民視第一台"],
+"litv-ftv13"=>[1,7,"民視新聞台"],
+"4gtv-4gtv001"=>[1,7,"民視台灣台"],
+"litv-ftv09"=>[1,6,"民視影劇台"],
+"litv-ftv07"=>[1,6,"民視旅遊台"],
+"4gtv-4gtv004"=>[1,9,"民視綜藝台"],
+"4gtv-4gtv040"=>[1,7,"中視"],
+"4gtv-4gtv074"=>[1,6,"中視新聞台"],
+"4gtv-4gtv009"=>[2,9,"中天新聞台"],
+"4gtv-4gtv041"=>[1,7,"華視"],
+"4gtv-4gtv052"=>[1,6,"華視新聞"],
+"4gtv-4gtv063"=>[1,8,"靖天國際台"],
+"4gtv-4gtv058"=>[1,9,"靖天戲劇台"],
+"4gtv-4gtv047"=>[1,2,"靖天日本台"],
+"4gtv-4gtv044"=>[1,7,"靖天卡通台"],
+"4gtv-4gtv062"=>[1,9,"靖天育樂台"],
+"4gtv-4gtv065"=>[1,9,"靖天資訊台"],
+"4gtv-4gtv061"=>[1,7,"靖天電影台"],
+"4gtv-4gtv054"=>[1,9,"靖天歡樂台"],
+"litv-longturn12"=>[5,2,"龍華偶像台"],
+"litv-longturn01"=>[4,5,"龍華卡通台"],
+"litv-longturn18"=>[5,6,"龍華戲劇台"],
+"litv-longturn11"=>[5,2,"龍華日韓台"],
+"litv-longturn21"=>[5,6,"龍華經典台"],
+"litv-longturn03"=>[5,6,"龍華電影台"],
+"litv-longturn02"=>[5,2,"龍華洋片台"],
+"4gtv-4gtv045"=>[1,7,"靖洋戲劇台"],
+"4gtv-4gtv057"=>[1,7,"靖洋卡通NiceBingo"],
+"litv-longturn14"=>[1,6,"寰宇新聞台"],
+"4gtv-4gtv156"=>[1,8,"寰宇新聞台灣台"],
+"4gtv-4gtv158"=>[1,2,"寰宇財經台"],
+"4gtv-4gtv073"=>[1,6,"TVBS"],
+"4gtv-4gtv068"=>[1,8,"TVBS歡樂台"],
+"4gtv-4gtv067"=>[1,9,"TVBS精采台"],
+"4gtv-4gtv034"=>[1,7,"八大精彩台"],
+"4gtv-4gtv039"=>[1,6,"八大綜藝台"],
+"4gtv-4gtv070"=>[1,9,"ELTA娛樂台"],
+"litv-longturn20"=>[5,7,"ELTV生活英語"],
+"4gtv-4gtv152"=>[1,7,"東森新聞"],
+"4gtv-4gtv153"=>[1,6,"東森財經新聞"],
+"4gtv-4gtv075"=>[1,6,"鏡電視新聞台"],
+"4gtv-4gtv076"=>[1,7,"亞洲旅遊台"],
+"4gtv-4gtv053"=>[1,9,"GINXEsportsTV"],
+"4gtv-4gtv014"=>[1,6,"時尚運動X"],
+"4gtv-4gtv101"=>[1,6,"智林體育台"],
+"4gtv-4gtv077"=>[1,5,"TraceSports"],
+"4gtv-4gtv011"=>[1,7,"影迷數位電影台"],
+"4gtv-4gtv017"=>[1,7,"AMC電影台"],
+"4gtv-4gtv042"=>[1,7,"公視戲劇台"],
+"4gtv-4gtv049"=>[1,9,"采昌影劇台"],
+"litv-longturn22"=>[5,2,"台灣戲劇台"],
+"litv-ftv15"=>[1,7,"影迷數位紀實台"],
+"4gtv-4gtv018"=>[1,7,"達文西頻道"],
+"4gtv-4gtv059"=>[1,7,"Classica古典樂"],
+"4gtv-4gtv083"=>[1,6,"MezzoLive"],
+"4gtv-4gtv006"=>[1,10,"豬哥亮歌廳秀"],
+"4gtv-4gtv082"=>[1,7,"TraceUrban"],
+"4gtv-4gtv016"=>[1,7,"韓國娛樂台"],
+"litv-ftv10"=>[1,7,"MCE 我的歐洲電影"],
+"4gtv-4gtv104"=>[1,7,"第1商業台"],
+"4gtv-4gtv110"=>[1,6,"Pet Club TV"],
+"litv-longturn19"=>[5,7,"Smart知識台"],
+"4gtv-4gtv013"=>[1,7,"視納華仁紀實頻道"],
+"4gtv-4gtv043"=>[1,7,"客家電視台"],
+"litv-ftv16"=>[1,6,"好消息"],
+"litv-ftv17"=>[1,6,"好消息2台"],
+"4gtv-4gtv084"=>[1,7,"國會頻道1"],
+"4gtv-4gtv085"=>[1,6,"國會頻道2"],
 
-$channels = [    
-    '4gtv-4gtv072' => ['TVBS新聞', 1, 6],
-    '4gtv-4gtv152' => ['東森新聞', 1, 7],
-    '4gtv-4gtv153' => ['東森財經', 1, 9],
-    'litv-ftv13' => ['民視新聞', 1, 9],
-    '4gtv-4gtv009' => ['中天新聞', 2, 9],
-    '4gtv-4gtv052' => ['華視新聞', 1, 6],
-    '4gtv-4gtv074' => ['中視新聞', 1, 6],
-    '4gtv-4gtv051' => ['台視新聞', 1, 6],    
-    'litv-longturn14' => ['寰宇新聞', 1, 7],
-    '4gtv-4gtv156' => ['寰宇台灣', 1, 8],          
-    '4gtv-4gtv041' => ['華視', 1, 7],
-    '4gtv-4gtv040' => ['中視', 1, 7],
-    '4gtv-4gtv066' => ['台視', 1, 7],
-    '4gtv-4gtv155' => ['民視', 1, 7],  
-    'litv-ftv07' => ['民視旅遊台', 1, 9],
-    '4gtv-4gtv076' => ['亞洲旅遊台', 1, 7],
-    'litv-xinchuang19' => ['Smart知識台', 5, 9],
-    '4gtv-4gtv047' => ['靖天日本台', 1, 2],
-    '4gtv-4gtv062' => ['靖天育樂台', 1, 9],
-    '4gtv-4gtv055' => ['靖天映畫台', 1, 9],  
-    '4gtv-4gtv063' => ['靖天國際台', 1, 8],
-    '4gtv-4gtv065' => ['靖天資訊台', 1, 9],
-    '4gtv-4gtv061' => ['靖天電影台', 1, 7],
-    '4gtv-4gtv046' => ['靖天綜合台', 1, 7],
-    '4gtv-4gtv058' => ['靖天戲劇台', 1, 9],
-    '4gtv-4gtv054' => ['靖天歡樂台', 1, 9],
-    '4gtv-4gtv045' => ['靖洋戲劇台', 1, 7],   
-    '4gtv-4gtv044' => ['靖天卡通台', 1, 9],
-    '4gtv-4gtv057' => ['靖洋卡通台', 1, 7],     
-    'litv-xinchuang03' => ['龍華電影台', 5, 6],
-    'litv-xinchuang02' => ['龍華洋片台', 5, 2],
-    'litv-xinchuang21' => ['龍華經典台', 5, 6],
-    'litv-xinchuang11' => ['龍華日韓台', 5, 2],
-    'litv-xinchuang12' => ['龍華偶像台', 5, 2],
-    'litv-xinchuang18' => ['龍華戲劇台', 5, 6],    
-    'litv-xinchuang01' => ['龍華卡通台', 4, 6],  
-    '4gtv-4gtv073' => ['TVBS', 1, 6],  
-    '4gtv-4gtv067' => ['TVBS精采台', 1, 9],
-    '4gtv-4gtv068' => ['TVBS歡樂台', 1, 8],     
-    '4gtv-4gtv064' => ['中視菁采台', 1, 9],   
-    '4gtv-4gtv080' => ['中視經典台', 1, 8],  
-    '4gtv-4gtv001' => ['民視台灣台', 1, 7],
-    '4gtv-4gtv003' => ['民視第一台', 1, 7],
-    '4gtv-4gtv004' => ['民視綜藝台', 1, 9],
-    'litv-ftv09' => ['民視影劇台', 1, 6],      
-    '4gtv-4gtv049' => ['采昌影劇台', 1, 9],   
-    '4gtv-4gtv042' => ['公視戲劇', 1, 7],
-    'litv-xinchuang22' => ['台灣戲劇台', 5, 2],    
-    '4gtv-4gtv011' => ['影迷數位電影台', 1, 7],
-    '4gtv-4gtv013' => ['視納華仁紀實頻道', 1, 7],
-    '4gtv-4gtv070' => ['愛爾達娛樂台', 1, 9],
-    '4gtv-4gtv018' => ['達文西頻道', 1, 7],         
+//如遇到音视频参数变动，需手动修改以下数字部分
+"4gtv-4gtv002"=>[1,11,"民視"],
+"4gtv-4gtv155"=>[1,7,"民視"],
+"4gtv-4gtv080"=>[1,8,"中視經典台"],
+"4gtv-4gtv064"=>[1,9,"中視菁采台"],
+"4gtv-4gtv109"=>[1,9,"中天亞洲台"],
+"4gtv-4gtv046"=>[1,7,"靖天綜合台"],
+"4gtv-4gtv055"=>[1,9,"靖天映畫台"],
+"4gtv-4gtv072"=>[1,6,"TVBS新聞台"],
+"4gtv-4gtv066"=>[1,6,"台視"],
+"4gtv-4gtv051"=>[1,6,"台視新聞台"],
+"4gtv-4gtv056"=>[1,6,"台視財經台"],
+"litv-longturn07"=>[5,2,"博斯運動一台"],
+"litv-longturn08"=>[5,2,"博斯運動二台"],
+"litv-longturn10"=>[5,2,"博斯無限台"],
+"litv-longturn13"=>[4,6,"博斯無限二台"],
+"litv-longturn09"=>[5,2,"博斯網球台"],
+"litv-longturn05"=>[5,2,"博斯高球台"],
+"litv-longturn06"=>[5,2,"博斯高球二台"],
+"litv-longturn04"=>[5,7,"博斯魅力台"],
+"4gtv-4gtv010"=>[1,7,"非凡新聞台"],
+"4gtv-4gtv048"=>[1,7,"非凡商業台"],
+"4gtv-4gtv079"=>[1,8,"ArirangTV"],
+"litv-ftv03"=>[1,7,"VOA美國之音"],
 ];
-
-// 获取当前URL的基础部分
-$baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[SCRIPT_NAME]";
-
-// 如果没有参数，返回频道URL列表
-if (!isset($_GET['id'])) {
-    foreach ($channels as $id => $data) {
-        echo $data[0] . ',' . $baseUrl . '?id=' . $id . "\n";
-    }
-    exit;
+$id = $_GET['id'] ?? '';
+if(empty(trim($id))){
+    die(creat_m3u($n)); 
 }
-
-// 有参数时生成m3u8播放列表
-$id = $_GET['id'];
-if (!isset($channels[$id])) {
-    header('HTTP/1.1 404 Not Found');
-    echo "频道不存在，可用频道列表：\n";
-    foreach ($channels as $cid => $cdata) {
-        echo $cdata[0] . ',' . $baseUrl . '?id=' . $cid . "\n";
-    }
-    exit;
+if(!isset($n[$id])){
+    header("HTTP/1.1 404 Not Found");
+    die('Channel not found');
 }
-
-// 使用原始音频参数
-$audioParam = $channels[$id][2];
-$videoParam = $channels[$id][1];
-
-$timestamp = intval(time()/4-355017625);
-$t = $timestamp * 4;
-$current = "#EXTM3U"."\r\n";
-$current .= "#EXT-X-VERSION:3"."\r\n";
-$current .= "#EXT-X-TARGETDURATION:4"."\r\n";
-$current .= "#EXT-X-MEDIA-SEQUENCE:{$timestamp}"."\r\n";
-
-for ($i = 0; $i < 3; $i++) {
-    $current .= "#EXTINF:4,"."\r\n";
-    $current .= "https://ntd-tgc.cdn.hinet.net/live/pool/{$id}/litv-pc/{$id}-avc1_6000000={$videoParam}-mp4a_134000_zho={$audioParam}-begin={$t}0000000-dur=40000000-seq={$timestamp}.ts"."\r\n";
-    $timestamp = $timestamp + 1;
-    $t = $t + 4;
-}
-
-header('Content-Type: application/vnd.apple.mpegurl');
-header('Content-Disposition: inline; filename='.$id.'.m3u8');
-header('Content-Length: ' . strlen($current));
-echo $current;
-?>
+$m3u8 = creat_m3u8($id, $n[$id][0], $n[$id][1]);
+header('Content-Type: application/vnd.apple.mpegurl'); 
+header('Content-Disposition: inline; filename=index.m3u8');
+die(trim($m3u8));
