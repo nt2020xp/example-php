@@ -1,10 +1,11 @@
 <?php
 /*
 使用方法 litv.php?id=4gtv-4gtv001
-无参数时返回完整频道列表，格式：频道名称,https://ip/litv.php?id=频道ID
-https://xxx.koyeb.app/litv.php
-https://xxx.serv00.net/litv.php
+无参数时返回完整频道列表
 */
+
+// 解決跨域問題，方便網頁播放器調用
+header('Access-Control-Allow-Origin: *');
 header('Content-Type: text/plain; charset=utf-8');
 
 $channels = [    
@@ -62,10 +63,11 @@ $channels = [
     '4gtv-4gtv018' => ['達文西頻道', 1, 7],         
 ];
 
-// 获取当前URL的基础部分
-$baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[SCRIPT_NAME]";
+// 取得當前 URL
+$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
+$baseUrl = $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'];
 
-// 如果没有参数，返回频道URL列表
+// 無 ID 參數時列出所有清單
 if (!isset($_GET['id'])) {
     foreach ($channels as $id => $data) {
         echo $data[0] . ',' . $baseUrl . '?id=' . $id . "\n";
@@ -73,37 +75,45 @@ if (!isset($_GET['id'])) {
     exit;
 }
 
-// 有参数时生成m3u8播放列表
 $id = $_GET['id'];
 if (!isset($channels[$id])) {
-    header('HTTP/1.1 404 Not Found');
-    echo "频道不存在，可用频道列表：\n";
-    foreach ($channels as $cid => $cdata) {
-        echo $cdata[0] . ',' . $baseUrl . '?id=' . $cid . "\n";
-    }
+    http_response_code(404);
+    echo "頻道不存在";
     exit;
 }
 
-// 使用原始音频参数
-$audioParam = $channels[$id][2];
+// 取得頻道對應參數
 $videoParam = $channels[$id][1];
+$audioParam = $channels[$id][2];
 
-$timestamp = intval(time()/4-355017625);
-$t = $timestamp * 4;
-$current = "#EXTM3U"."\r\n";
-$current .= "#EXT-X-VERSION:3"."\r\n";
-$current .= "#EXT-X-TARGETDURATION:4"."\r\n";
-$current .= "#EXT-X-MEDIA-SEQUENCE:{$timestamp}"."\r\n";
+/**
+ * 修正後的時間戳邏輯
+ * LiTV/4GTV Hinet CDN 通常以 4 秒為一個 TS 切片
+ */
+$duration = 4;
+$now = time();
+// 計算序列號：當前時間除以 4，減去 6 是為了提供一點緩衝（延後約 24 秒），確保檔案已生成
+$timestamp = floor($now / $duration) - 6;
+$t = $timestamp * $duration;
 
-for ($i = 0; $i < 3; $i++) {
-    $current .= "#EXTINF:4,"."\r\n";
-    $current .= "https://ntd-tgc.cdn.hinet.net/live/pool/{$id}/litv-pc/{$id}-avc1_6000000={$videoParam}-mp4a_134000_zho={$audioParam}-begin={$t}0000000-dur=40000000-seq={$timestamp}.ts"."\r\n";
-    $timestamp = $timestamp + 1;
-    $t = $t + 4;
+// 建立 M3U8 內容
+$m3u8 = "#EXTM3U\r\n";
+$m3u8 .= "#EXT-X-VERSION:3\r\n";
+$m3u8 .= "#EXT-X-TARGETDURATION:{$duration}\r\n";
+$m3u8 .= "#EXT-X-MEDIA-SEQUENCE:{$timestamp}\r\n";
+
+// 產生 5 個切片連結
+for ($i = 0; $i < 5; $i++) {
+    $m3u8 .= "#EXTINF:{$duration}.0,\r\n";
+    $m3u8 .= "https://ntd-tgc.cdn.hinet.net{$id}/litv-pc/{$id}-avc1_6000000={$videoParam}-mp4a_134000_zho={$audioParam}-begin={$t}0000000-dur=40000000-seq={$timestamp}.ts\r\n";
+    $timestamp++;
+    $t += $duration;
 }
 
+// 輸出標頭
 header('Content-Type: application/vnd.apple.mpegurl');
-header('Content-Disposition: inline; filename='.$id.'.m3u8');
-header('Content-Length: ' . strlen($current));
-echo $current;
+header('Content-Disposition: inline; filename="'.$id.'.m3u8"');
+header('Cache-Control: no-cache');
+
+echo $m3u8;
 ?>
