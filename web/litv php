@@ -1,0 +1,72 @@
+<?php
+/**
+ * LiTV 直播解析腳本 (完整版)
+ * 支援功能：
+ * 1. 帶 id 參數時解析 m3u8 位址 (例如: litv.php?id=401)
+ * 2. 不帶參數時顯示所有可用頻道列表
+ */
+
+error_reporting(0);
+header("Content-Type: text/plain; charset=utf-8");
+
+// 1. 設定常用請求標頭
+function get_curl_headers($assetId = '') {
+    return [
+        'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Referer: https://www.litv.tv' . $assetId,
+        'Origin: https://www.litv.tv',
+        'Accept: application/json, text/plain, */*'
+    ];
+}
+
+// 2. 解析特定頻道 M3U8
+function get_stream_url($id) {
+    $apiUrl = "https://www.litv.tv" . $id . "&contentType=channel";
+    $ch = curl_init($apiUrl);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, get_curl_headers($id));
+    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+    $res = curl_exec($ch);
+    curl_close($ch);
+    
+    $json = json_decode($res, true);
+    return $json['m3u8Url'] ?? null;
+}
+
+// 3. 獲取所有頻道清單 (用於生成清單)
+function get_all_channels() {
+    $listUrl = "https://www.litv.tv";
+    $ch = curl_init($listUrl);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, get_curl_headers());
+    $res = curl_exec($ch);
+    curl_close($ch);
+    
+    return json_decode($res, true)['channels'] ?? [];
+}
+
+// --- 主程式邏輯 ---
+$id = $_GET['id'] ?? '';
+
+if (!empty($id)) {
+    // 執行解析並跳轉到 m3u8
+    $m3u8 = get_stream_url($id);
+    if ($m3u8) {
+        header("Location: " . $m3u8);
+        exit;
+    } else {
+        http_response_code(404);
+        echo "Error: 無法取得頻道串流，請確認您的伺服器 IP 位於台灣。";
+    }
+} else {
+    // 顯示使用說明與頻道 ID 列表
+    $channels = get_all_channels();
+    echo "【LiTV PHP 直播解析使用說明】\n";
+    echo "用法：litv.php?id=[頻道ID]\n";
+    echo "範例：litv.php?id=401 (民視新聞)\n\n";
+    echo "--- 目前可用頻道清單 ---\n";
+    foreach ($channels as $ch) {
+        printf("[%s] %s\n", $ch['assetId'], $ch['title']);
+    }
+}
+?>
