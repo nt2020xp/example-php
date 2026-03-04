@@ -10,7 +10,7 @@
  */
 
 header('Content-Type: text/plain; charset=utf-8',true,200);
-$SECRET_TOKEN = 'judy'; // 替换为你的实际token
+$SECRET_TOKEN = '1234'; // 替换为你的实际token
 
 // 检查token是否有效
 if (!isset($_GET['token'])) {
