@@ -1,153 +1,263 @@
 <?php
-//脚本生成时间：2026-01-17 12:00:19
-header('Content-Type: text/plain; charset=utf-8');
-error_reporting(0);
-function creat_m3u8($id,$qlt,$alt){
-    $timestamp = intval(time()/4-355017628);
-    $t=$timestamp*4;
-    $m3u8 = "#EXTM3U\n";
-    $m3u8.= "#EXT-X-VERSION:3\n";
-    $m3u8.= "#EXT-X-TARGETDURATION:4\n";
-    $m3u8.= "#EXT-X-MEDIA-SEQUENCE:{$timestamp}\n";
-    for ($i=0; $i<10; $i++) {
-        $m3u8.= "#EXTINF:4,\n";
-        $m3u8.="https://ntd-tgc.cdn.hinet.net/live/pool/{$id}/litv-pc/{$id}-avc1_6000000={$qlt}-mp4a_134000_zho={$alt}-begin={$t}0000000-dur=40000000-seq={$timestamp}.ts\n";
-        $timestamp = $timestamp+1;
-        $t=$t+4;
-    }
-    return $m3u8;
+/*
+ * LiTV
+ * 版本：v1.0
+ * 作者：Passwd Word
+ * 最后修改：2026-01-29
+ * 功能说明：
+ *   - 访问 `http://yourserver/live_litv.php?token=xxxx` 返回完整 M3U 列表
+ *   - 访问 `http://yourserver/live_litv.php?token=xxxx&id=频道ID` 使用 API 获取指定频道的 M3U8 播放地址
+ */
+
+header('Content-Type: text/plain; charset=utf-8',true,200);
+$SECRET_TOKEN = 'judy'; // 替换为你的实际token
+
+// 检查token是否有效
+if (!isset($_GET['token'])) {
+    http_response_code(403);
+    echo "Error: Access denied. Token is required.";
+    exit;
 }
-function get_path() {
-    $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
-    return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'];
+
+if ($_GET['token'] !== $SECRET_TOKEN) {
+    http_response_code(403);
+    echo "Error: Invalid token.";
+    exit;
 }
-function creat_m3u($n){
-    $m3u="#EXTM3U x-tvg-url=".'"https://epg.iill.top/epg.xml.gz"'."\n";
-    $local_path = get_path();
-    foreach ($n as $id => $key ){
-        $m3u.='#EXTINF:-1 tvg-id="'.$id.'" tvg-name="'.$key[4].'" tvg-logo="https://epg.iill.top/logo/'.$key[2].'.png" group-title="'.$key[3].'",'.$key[4]."\n{$local_path}?id={$id}\n";
-    }
-    return $m3u;
-}
-$n = [
-//以下参数为脚本每4小时自动生成一次
-//==================== 綜合頻道 ====================
-"4gtv-4gtv002"=>[1,11,"民視","綜合頻道","民視"],
-"4gtv-4gtv003"=>[1,7,"民視第一台","綜合頻道","民視第一台"],
-"4gtv-4gtv001"=>[1,7,"民視台灣台","綜合頻道","民視台灣台"],
-"4gtv-4gtv040"=>[1,7,"中视","綜合頻道","中視"],
-"4gtv-4gtv041"=>[1,7,"華視","綜合頻道","華視"],
-"4gtv-4gtv046"=>[1,7,"靖天綜合台","綜合頻道","靖天綜合台"],
-"4gtv-4gtv063"=>[1,8,"靖天國際台","綜合頻道","靖天國際台"],
-"4gtv-4gtv047"=>[1,2,"靖天日本台","綜合頻道","靖天日本台"],
-"4gtv-4gtv043"=>[1,7,"客家電視台","綜合頻道","客家電視台"],
-"litv-ftv16"=>[1,6,"好消息","綜合頻道","好消息"],
-"litv-ftv17"=>[1,6,"好消息2台","綜合頻道","好消息2台"],
 
-//==================== 新聞財經 ====================
-"litv-ftv13"=>[1,7,"民視新聞台","新聞財經","民視新聞台"],
-"4gtv-4gtv074"=>[1,6,"中视新闻","新聞財經","中視新聞台"],
-"4gtv-4gtv009"=>[2,9,"中天新闻","新聞財經","中天新聞台"],
-"4gtv-4gtv052"=>[1,6,"華視新聞","新聞財經","華視新聞"],
-"4gtv-4gtv065"=>[1,9,"靖天資訊台","新聞財經","靖天資訊台"],
-"litv-longturn14"=>[1,6,"寰宇新聞台","新聞財經","寰宇新聞台"],
-"4gtv-4gtv156"=>[1,8,"寰宇新聞台灣台","新聞財經","寰宇新聞台灣台"],
-"4gtv-4gtv158"=>[1,2,"寰宇財經台","新聞財經","寰宇財經HD"],
-"4gtv-4gtv152"=>[1,7,"东森新闻","新聞財經","東森新聞台"],
-"4gtv-4gtv153"=>[1,6,"东森财经","新聞財經","東森財經台"],
-"4gtv-4gtv075"=>[1,6,"鏡電視新聞台","新聞財經","鏡電視新聞台"],
-"4gtv-4gtv079"=>[1,8,"Arirang-TV","新聞財經","Arirang TV"],
-"4gtv-4gtv104"=>[1,7,"第1商业台","新聞財經","第1商業台"],
+// LiTV API 配置
+$API_URL = 'https://www.litv.tv/api/get-urls';
+$COOKIES = [];//<===自行填入
+$PUID = '';//<===自行填入
 
-//==================== 電影戲劇 ====================
-"litv-ftv09"=>[1,6,"民視影劇台","電影戲劇","民視影劇台"],
-"4gtv-4gtv058"=>[1,9,"靖天戲劇台","電影戲劇","靖天戲劇台"],
-"4gtv-4gtv055"=>[1,9,"靖天映畫台","電影戲劇","靖天映畫"],
-"4gtv-4gtv061"=>[1,7,"靖天電影台","電影戲劇","靖天電影台"],
-"litv-xinchuang12"=>[10003,20000,"龍華偶像台","電影戲劇","龍華偶像"],
-"litv-xinchuang18"=>[10003,20000,"龍華戲劇台","電影戲劇","龍華戲劇"],
-"litv-xinchuang21"=>[10003,20000,"龍華經典台","電影戲劇","龍華經典HD"],
-"litv-xinchuang03"=>[10003,20000,"龍華電影台","電影戲劇","龍華電影"],
-"litv-xinchuang02"=>[10003,20001,"龍華洋片台","電影戲劇","龍華洋片HD"],
-"4gtv-4gtv045"=>[1,7,"靖洋戲劇台","電影戲劇","靖洋戲劇台"],
-"4gtv-4gtv011"=>[1,7,"影迷數位電影台","電影戲劇","影迷數位電影台"],
-"4gtv-4gtv017"=>[1,7,"AMC-最愛電影","電影戲劇","amc電影台"],
-"4gtv-4gtv042"=>[1,7,"公視戲劇台","電影戲劇","公視戲劇"],
-"4gtv-4gtv049"=>[1,9,"采昌影劇台","電影戲劇","采昌影劇台"],
-"litv-xinchuang22"=>[10003,20001,"台灣戲劇台","電影戲劇","台灣戲劇HD"],
-"litv-ftv10"=>[1,7,"MCE","電影戲劇","MCE 我的歐洲電影台"],
-
-//==================== 綜藝娛樂 ====================
-"4gtv-4gtv004"=>[1,9,"民視綜藝台","綜藝娛樂","民視綜藝台"],
-"4gtv-4gtv062"=>[1,9,"靖天育樂台","綜藝娛樂","靖天育樂台"],
-"4gtv-4gtv054"=>[1,9,"靖天歡樂台","綜藝娛樂","靖天歡樂台"],
-"4gtv-4gtv067"=>[1,9,"TVBS精采","綜藝娛樂","TVBS精采台"],
-"4gtv-4gtv034"=>[1,7,"八大精彩台","綜藝娛樂","八大精彩台"],
-"4gtv-4gtv039"=>[1,6,"八大綜藝台","綜藝娛樂","八大綜藝台"],
-"4gtv-4gtv070"=>[1,9,"ELTA娛樂","綜藝娛樂","愛爾達娛樂台"],
-"4gtv-4gtv006"=>[1,10,"豬哥亮歌廳秀","綜藝娛樂","豬哥亮歌廳秀"],
-"4gtv-4gtv016"=>[1,7,"韩国娱乐台KMTV","綜藝娛樂","韓國娛樂台KMTV"],
-
-//==================== 科教紀實 ====================
-"litv-ftv07"=>[1,6,"民視旅遊台","科教紀實","民視旅遊台"],
-"4gtv-4gtv076"=>[1,7,"亞洲旅遊台","科教紀實","亞洲旅遊台"],
-"litv-xinchuang20"=>[10003,20000,"ELTA生活英語","科教紀實","ELTV生活英語台"],
-"litv-ftv15"=>[1,7,"影迷數位紀實台","科教紀實","影迷數位紀實台"],
-"4gtv-4gtv018"=>[1,7,"達文西頻道","科教紀實","達文西頻道"],
-"4gtv-4gtv059"=>[1,7,"Classica-古典樂","科教紀實","CLASSICA 古典樂"],
-"4gtv-4gtv083"=>[1,6,"Mezzo-Live","科教紀實","Mezzo Live"],
-"4gtv-4gtv110"=>[1,6,"Pet-Club-TV","科教紀實","Pet Club TV"],
-"litv-xinchuang19"=>[10003,20000,"Smart-知識台","科教紀實","Smart 知識HD"],
-"4gtv-4gtv013"=>[1,7,"視納華仁紀實頻道","科教紀實","視納華仁紀實頻道"],
-"4gtv-4gtv084"=>[1,7,"國會頻道1","科教紀實","國會頻道1"],
-"4gtv-4gtv085"=>[1,6,"國會頻道2","科教紀實","國會頻道2"],
-
-//==================== 卡通動漫 ====================
-"4gtv-4gtv044"=>[1,7,"靖天卡通台","卡通動漫","靖天卡通台"],
-"litv-xinchuang01"=>[10003,20000,"龍華卡通台","卡通動漫","龙华卡通台"],
-"4gtv-4gtv057"=>[1,7,"靖洋卡通-Nice-Bingo","卡通動漫","靖洋卡通NiceBingo"],
-
-//==================== 體育競技 ====================
-"4gtv-4gtv053"=>[1,9,"GINX-Esports-TV","體育競技","Ginx TV電競頻道"],
-"4gtv-4gtv014"=>[1,6,"时尚运动X","體育競技","時尚運動X"],
-"4gtv-4gtv101"=>[1,6,"智林体育","體育競技","智林體育台"],
-"4gtv-4gtv077"=>[1,5,"TraceSports","體育競技","TRACE Sport Stars"],
-"4gtv-4gtv082"=>[1,7,"Trace-Urban","體育競技","TRACE Urban"],
-
-
-//如遇到音视频参数变动，需手动修改以下数字部分
-"4gtv-4gtv155"=>[1,7,"民視","綜合頻道","民視"],
-"4gtv-4gtv080"=>[1,8,"中视经典","綜藝娛樂","中視經典台"],
-"4gtv-4gtv064"=>[1,9,"中視菁采台","綜藝娛樂","中視菁采台"],
-"4gtv-4gtv109"=>[1,9,"中天亚洲","綜合頻道","中天亞洲台"],
-"litv-xinchuang11"=>[10003,20000,"龍華日韓台","電影戲劇","龍華日韓台"],
-"4gtv-4gtv073"=>[1,6,"TVBS","綜合頻道","TVBS"],
-"4gtv-4gtv072"=>[1,6,"TVBS新闻","新聞財經","TVBS新聞台"],
-"4gtv-4gtv068"=>[1,8,"TVBS欢乐","綜藝娛樂","TVBS歡樂台"],
-"4gtv-4gtv066"=>[1,6,"台視","綜合頻道","台視"],
-"4gtv-4gtv051"=>[1,6,"台視新聞台","新聞財經","台視新聞台"],
-"4gtv-4gtv056"=>[1,6,"台視財經台","新聞財經","台視財經台"],
-"litv-xinchuang07"=>[10003,20000,"博斯运动1","體育競技","博斯運動一台"],
-"litv-xinchuang08"=>[10003,20000,"博斯运动2","體育競技","博斯運動二台"],
-"litv-xinchuang10"=>[10003,20000,"博斯无限","體育競技","博斯無限台"],
-"litv-xinchuang13"=>[10003,20000,"博斯无限2","體育競技","博斯無限二台"],
-"litv-xinchuang09"=>[10003,20000,"博斯网球","體育競技","博斯網球台"],
-"litv-xinchuang05"=>[10003,20000,"博斯高球1","體育競技","博斯高球1台"],
-"litv-xinchuang06"=>[10003,20000,"博斯高球2","體育競技","博斯高球2台"],
-"litv-xinchuang04"=>[10003,20000,"博斯魅力","體育競技","博斯魅力網"],
-"4gtv-4gtv010"=>[1,7,"非凡新聞台","新聞財經","非凡新聞台"],
-"4gtv-4gtv048"=>[1,7,"非凡商業台","新聞財經","非凡商業台"],
-"litv-ftv03"=>[1,7,"VOA-美國之音","新聞財經","VOA美國之音"]
+// 频道映射表
+// 格式: '频道ID' => ['tvg-id', '频道名称', '台标URL', '分组名称']
+$channels = [
+    '4gtv-4gtv001' => ['民視台灣台', '民視台灣台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/FTV3.png','綜合其他'],
+    '4gtv-4gtv002' => ['民視', '民視', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/FTV.png','綜合其他'],
+    '4gtv-4gtv003' => ['民視第一台', '民視第一台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/FTV2.png','綜合其他'],
+    '4gtv-4gtv004' => ['民視綜藝台', '民視綜藝', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/FTV6.png','音樂綜藝'],
+    '4gtv-4gtv006' => ['豬哥亮歌廳秀', '豬哥亮歌廳秀', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/FTV7.png','音樂綜藝'],
+    '4gtv-4gtv009' => ['中天新聞台', '中天新聞台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/CTI2.png','新聞財經'],
+    '4gtv-4gtv010' => ['非凡新聞台', '非凡新聞台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Unique1.png','新聞財經'],
+    '4gtv-4gtv011' => ['影迷數位電影台', '影迷數位電影台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/FANS1.png','電影戲劇'],
+    '4gtv-4gtv013' => ['視納華仁紀實頻道', '視納華仁紀實頻道', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/cnex.png','紀實探索'],
+    '4gtv-4gtv014' => ['時尚運動X', '時尚運動X', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/ssydX.png','體育競技'],
+    '4gtv-4gtv016' => ['韓國娛樂台 KMTV', '韓國娛樂台 KMTV', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/hanguoyl.png','綜合其他'],
+    '4gtv-4gtv017' => ['amc電影台', 'amc 電影台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/AMCMovies.png','電影戲劇'],
+    '4gtv-4gtv018' => ['達文西頻道', '達文西頻道', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/DaVinci.png','兒童卡通'],
+    '4gtv-4gtv034' => ['八大精彩台', '八大精彩台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/GTV5.png','音樂綜藝'],
+    '4gtv-4gtv039' => ['八大綜藝台', '八大綜藝台', 'https://4gtvimg2.4gtv.tv/4gtv-Image/Channel/mobile/logo_4gtv_4gtv-4gtv039_mobile.png','音樂綜藝'],
+    '4gtv-4gtv040' => ['中視', '中視', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/CTV.png','綜合其他'],
+    '4gtv-4gtv041' => ['華視', '華視', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/CTS.png','綜合其他'],
+    '4gtv-4gtv042' => ['公視戲劇', '公視戲劇', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/PTS3.png','電影戲劇'],
+    '4gtv-4gtv043' => ['客家電視台', '客家電視', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Hakka.png','綜合其他'],
+    '4gtv-4gtv044' => ['靖天卡通台', '靖天卡通台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/GoldenTV7.png','兒童卡通'],
+    '4gtv-4gtv045' => ['靖洋戲劇台', '靖洋戲劇台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/jy2.png','電影戲劇'],
+    '4gtv-4gtv046' => ['靖天綜合台', '靖天綜合台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/GoldenTV1.png','綜合其他'],
+    '4gtv-4gtv047' => ['靖天日本台', '靖天日本台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/GoldenTV6.png','綜合其他'],
+    '4gtv-4gtv048' => ['非凡商業台', '非凡商業台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Unique2.png','新聞財經'],
+    '4gtv-4gtv049' => ['采昌影劇台', '采昌影劇', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/caichang.png','電影戲劇'],
+    '4gtv-4gtv051' => ['台視新聞', '台視新聞台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/TTV2.png','新聞財經'],
+    '4gtv-4gtv052' => ['華視新聞', '華視新聞台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/CTS1.png','新聞財經'],
+    '4gtv-4gtv053' => ['GINX Esports TV', 'GINX Esports TV', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/GINXesport.png','體育競技'],
+    '4gtv-4gtv054' => ['NICETV靖天歡樂台', '靖天歡樂', 'https://epg.pw/media/images/epg/2024/06/12/20240612111031068542_59.png','音樂綜藝'],
+    '4gtv-4gtv055' => ['靖天映畫', '靖天映畫', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/GoldenTV3.png','電影戲劇'],
+    '4gtv-4gtv056' => ['台視財經', '台視財經', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/TTV3.png','新聞財經'],
+    '4gtv-4gtv057' => ['靖洋卡通台Nice Bingo', '靖洋卡通台Nice Bingo', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/jy1.png','兒童卡通'],
+    '4gtv-4gtv058' => ['靖天戲劇台', '靖天戲劇台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/GoldenTV8.png','電影戲劇'],
+    '4gtv-4gtv059' => ['CLASSICA 古典樂', 'CLASSICA 古典樂', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/classical.png','音樂綜藝'],
+    '4gtv-4gtv061' => ['靖天電影台', '靖天電影台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/GoldenTV9.png','電影戲劇'],
+    '4gtv-4gtv062' => ['靖天育樂台', '靖天育樂台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/GoldenTV5.png','綜合其他'],
+    '4gtv-4gtv063' => ['KLT-靖天國際台', 'KLT-靖天國際台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/GoldenTV10.png','綜合其他'],
+    '4gtv-4gtv065' => ['靖天資訊台', '靖天資訊台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/GoldenTV2.png','綜合其他'],
+    '4gtv-4gtv066' => ['台視', '台視', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/TTV.png','綜合其他'],
+    '4gtv-4gtv070' => ['愛爾達娛樂台', 'ELTA娛樂', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/ELTA3.png','音樂綜藝'],
+    '4gtv-4gtv074' => ['中視新聞', '中視新聞', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/CTV1.png','新聞財經'],
+    '4gtv-4gtv075' => ['鏡電視新聞台', '鏡電視新聞台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Mnews.png','新聞財經'],
+    '4gtv-4gtv076' => ['亞洲旅遊台', '亞洲旅遊', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Asiatravel.png','生活旅遊'],
+    '4gtv-4gtv077' => ['TRACESPORTSTARS', 'TRACE Sport Stars', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/TraceSport.png','體育競技'],
+    '4gtv-4gtv079' => ['ARIRANG阿里郎頻道', 'Arirang TV', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/ArirangTV.png','綜合其他'],
+    '4gtv-4gtv080' => ['中視經典台', '中視經典台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/CTV2.png','電影戲劇'],
+    '4gtv-4gtv082' => ['TRACE Urban', 'TRACE Urban', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/TraceUrban.png','音樂綜藝'],
+    '4gtv-4gtv083' => ['Mezzo Live HD', 'Mezzo Live HD', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/mezzolive.png','音樂綜藝'],
+    '4gtv-4gtv084' => ['國會頻道1台', '國會頻道1台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/guohui1.png','綜合其他'],
+    '4gtv-4gtv085' => ['國會頻道2台', '國會頻道2台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/guohui2.png','綜合其他'],
+    '4gtv-4gtv101' => ['智林體育台', '智林體育台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/TSL.png','體育競技'],
+    '4gtv-4gtv102' => ['東森購物1台', '東森購物1台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/EBC11.png','綜合其他'],
+    '4gtv-4gtv103' => ['東森購物2台', '東森購物2台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/EBC11.png','綜合其他'],
+    '4gtv-4gtv104' => ['第1商業', '第1商業', 'https://p-cdnstatic.svc.litv.tv/pics/logo_litv_4gtv-4gtv104_tv.png','新聞財經'],
+    '4gtv-4gtv109' => ['中天亞洲台', '中天亞洲台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/CTI4.png','綜合其他'],
+    '4gtv-4gtv110' => ['Pet Club TV', 'Pet Club TV', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/PetClubTV.png','生活旅遊'],
+    '4gtv-4gtv152' => ['東森新聞台', '東森新聞台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/EBC6.png','新聞財經'],
+    '4gtv-4gtv153' => ['東森財經新聞台', '東森財經新聞台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/EBC7.png','新聞財經'],
+    '4gtv-4gtv155' => ['民視', '民視', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/FTV.png','綜合其他'],
+    '4gtv-4gtv156' => ['寰宇新聞台灣台', '寰宇新聞台灣台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Global3.png','新聞財經'],
+    '4gtv-4gtv158' => ['寰宇財經台', '寰宇財經台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Global4.png','新聞財經'],
+    'litv-ftv03' => ['VOA美國之音', 'VOA 美國之音', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/VOATV.png','新聞財經'],
+    'litv-ftv07' => ['民視旅遊台', '民視旅遊', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/FTV5.png','生活旅遊'],
+    'litv-ftv09' => ['民視影劇台', '民視影劇', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/FTV4.png','電影戲劇'],
+    'litv-ftv10' => ['My Cinema Europe HD 我的歐洲電影', '我的歐洲電影', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/MyCinema.png','電影戲劇'],
+    'litv-ftv13' => ['民視新聞台', '民視新聞台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/FTV1.png','新聞財經'],
+    'litv-ftv15' => ['影迷數位紀實台', '影迷數位紀實台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/FANS2.png','紀實探索'],
+    'litv-ftv16' => ['好消息', '好消息', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/GoodTV1.png','綜合其他'],
+    'litv-ftv17' => ['好消息2台', '好消息2台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/GoodTV2.png','綜合其他'],
+    'litv-xinchuang01' => ['龍華卡通台', '龍華卡通台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/LTV9.png','兒童卡通'],
+    'litv-xinchuang02' => ['龍華洋片台', '龍華洋片台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/LTV2.png','電影戲劇'],
+    'litv-xinchuang03' => ['龍華電影台', '龍華電影台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/LTV1.png','電影戲劇'],
+    'litv-xinchuang04' => ['博斯魅力台', '博斯魅力台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/sportcast6.png','體育競技'],
+    'litv-xinchuang05' => ['博斯高球台', '博斯高球台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/sportcast3.png','體育競技'],
+    'litv-xinchuang06' => ['博斯高球二台', '博斯高球二台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/sportcast4.png','體育競技'],
+    'litv-xinchuang07' => ['博斯運動一台', '博斯運動一台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/sportcast1.png','體育競技'],
+    'litv-xinchuang08' => ['博斯運動二台', '博斯運動二台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/sportcast2.png','體育競技'],
+    'litv-xinchuang09' => ['博斯網球台', '博斯網球台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/sportcast5.png','體育競技'],
+    'litv-xinchuang10' => ['博斯無限台', '博斯無限台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/sportcast7.png','體育競技'],
+    'litv-xinchuang11' => ['龍華日韓台', '龍華日韓台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/LTV5.png','電影戲劇'],
+    'litv-xinchuang12' => ['龍華偶像台', '龍華偶像台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/LTV6.png','電影戲劇'],
+    'litv-xinchuang13' => ['博斯無限二台', '博斯無限二台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/sportcast8.png','體育競技'],
+    'litv-longturn14' => ['寰宇新聞台', '寰宇新聞台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Global2.png','新聞財經'],
+    'litv-xinchuang18' => ['龍華戲劇台', '龍華戲劇台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/LTV4.png','電影戲劇'],
+    'litv-xinchuang19' => ['SMART知識台', 'SMART知識台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/smarttv.png','生活旅遊'],
+    'litv-xinchuang20' => ['ELTV英語學習台', 'ELTV英語學習台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/ELTA7.png','兒童卡通'],
+    'litv-xinchuang21' => ['龍華經典台', '龍華經典台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/LTV7.png','電影戲劇'],
+    'litv-xinchuang22' => ['台灣戲劇台', '台灣戲劇台', 'https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Taiwanxiju.png','電影戲劇'],
+    'nnews-zh' => ['倪珍播新聞', '倪珍播新聞', 'https://p-cdnstatic.svc.litv.tv/pics/logo_litv_nnews_mobile.png','新聞財經'],
+    'litv-fast1223' => ['Focus歡樂綜合台', 'Focus歡樂綜合台', 'https://p-cdnstatic.svc.litv.tv/pics/vod_channel/litv-fast1223_mobile.png','綜合其他'],
+    'litv-fast1224' => ['Focus風采戲劇台', 'Focus風采戲劇台', 'https://p-cdnstatic.svc.litv.tv/pics/vod_channel/litv-fast1224_mobile.png','電影戲劇'],
+    'litv-fast1225' => ['黃金八點檔', '黃金八點檔', 'https://p-cdnstatic.svc.litv.tv/pics/vod_channel/litv-fast1224_mobile.png','綜合其他']
 ];
-$id = $_GET['id'] ?? '';
-if(empty(trim($id))){
-    die(creat_m3u($n)); 
+
+$id = isset($_GET['id']) ? $_GET['id'] : null;
+
+// 动态获取基础 URL
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
+$host = $_SERVER['HTTP_HOST'];
+$base_url = "$protocol://$host";
+$current_script = basename($_SERVER['PHP_SELF']);
+
+// 无参数时返回完整 M3U 频道列表
+if (!$id) {
+    header('Content-Type: text/plain; charset=utf-8');
+    echo "#EXTM3U\n";
+    echo "#EXTM3U x-tvg-url=\"https://epg.iill.top/epg.xml\"\n";
+    echo "\n";
+    foreach ($channels as $key => $value) {
+        $group = (isset($value[3]) && $value[3] !== '') ? $value[3] : 'LITV';
+        echo '#EXTINF:-1 tvg-id="'.$value[0].'" tvg-name="'.$value[0].'" tvg-logo="'.$value[2].'" group-title="'.$group.'",'.$value[1]."\n";
+        echo "$base_url/$current_script?id=" . urlencode($key) . "&token=" . urlencode($SECRET_TOKEN) . "\n";
+    }
+    exit;
 }
-if(!isset($n[$id])){
-    header("HTTP/1.1 404 Not Found");
-    die('Channel not found');
+
+// 检查频道 ID 是否有效
+if (!isset($channels[$id])) {
+    http_response_code(404);
+    echo "Error: Channel not found.";
+    exit;
 }
-$m3u8 = creat_m3u8($id, $n[$id][0], $n[$id][1]);
-header('Content-Type: application/vnd.apple.mpegurl'); 
-header('Content-Disposition: inline; filename=index.m3u8');
-die(trim($m3u8));
+
+/**
+ * 发送请求获取串流网址
+ */
+function getLiTVStreamURL($assetId, $mediaType = 'channel', $puid = null) {
+    global $API_URL, $COOKIES, $PUID;
+    
+    // 如果提供了新的 PUID，则使用
+    if (!$puid) {
+        $puid = $PUID;
+    }
+    
+    // 准备请求资料
+    $postData = [
+        'AssetId' => $assetId,
+        'MediaType' => $mediaType,
+        'puid' => $puid
+    ];
+    
+    // 将数组转换为 JSON 格式
+    $payload = json_encode($postData);
+    
+    // 准备 cookies 字符串
+    $cookieString = '';
+    foreach ($COOKIES as $name => $value) {
+        $cookieString .= "{$name}={$value}; ";
+    }
+    $cookieString = rtrim($cookieString, '; ');
+    
+    // 准备 headers
+    $headers = [
+        'Accept: application/json, text/plain, */*',
+        'Accept-Encoding: gzip, deflate, br, zstd',
+        'Accept-Language: zh-TW,zh-CN;q=0.9,zh;q=0.8,en-US;q=0.7,en;q=0.6',
+        'Content-Type: application/json',
+        'Origin: https://www.litv.tv',
+        'Referer: https://www.litv.tv/channel/watch/litv-vchannel22',
+        'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36',
+        'Priority: u=1, i'
+    ];
+    
+    // 初始化 cURL
+    $ch = curl_init();
+    
+    // 设置 cURL 选项
+    $options = [
+        CURLOPT_URL => $API_URL,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => $payload,
+        CURLOPT_HTTPHEADER => array_merge($headers, ["Cookie: $cookieString"]),
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false,
+        CURLOPT_ENCODING => '',
+        CURLOPT_TIMEOUT => 30
+    ];
+    
+    curl_setopt_array($ch, $options);
+    
+    // 执行请求
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    
+    if ($response === false) {
+        $error = curl_error($ch);
+        curl_close($ch);
+        throw new Exception("cURL 错误: $error");
+    }
+    
+    curl_close($ch);
+    
+    // 检查 HTTP 状态码
+    if ($httpCode != 200) {
+        throw new Exception("HTTP 错误: $httpCode");
+    }
+    
+    // 解析 JSON 响应
+    $data = json_decode($response, true);
+    
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        throw new Exception("JSON 解析错误: " . json_last_error_msg());
+    }
+    
+    // 检查是否成功取得 AssetURLs
+    if (isset($data['result']['AssetURLs']) && !empty($data['result']['AssetURLs'])) {
+        return $data['result']['AssetURLs'][0];
+    } else {
+        throw new Exception("无法取得 AssetURLs");
+    }
+}
+
+// 使用 API 获取串流网址
+try {
+    // 获取串流网址
+    $streamURL = getLiTVStreamURL($id, 'channel', $PUID);
+    
+    // 重定向到获取的串流网址
+    header('Location: ' . $streamURL, true, 302);
+    exit;
+    
+} catch (Exception $e) {
+    http_response_code(500);
+    echo "Error: " . $e->getMessage();
+    exit;
+}
+?>
