@@ -5,7 +5,7 @@
  */
 
 // 模擬 ctx 與 jz 的環境變數
-$jz_mode = 3; // 3 為獲取列表, 1 為獲取播放位址
+$jz_mode = 1; // 3 為獲取列表, 1 為獲取播放位址
 $jz_path = "path/to/js"; 
 $current_url = "https://4gtv.tv"; // 測試用
 
