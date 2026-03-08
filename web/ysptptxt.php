@@ -1,61 +1,60 @@
 <?php
-// 設定輸出格式為純文字 (UTF-8)
+// 強制輸出為純文字格式
 header('Content-Type: text/plain; charset=utf-8');
 
 /**
- * 獲取央視頻頻道資料並轉換為 TXT 格式
+ * 抓取央視頻數據並轉為 TXT 格式
  */
-function generateTxtPlaylist() {
-    $apiUrl = 'https://yangshipin.cn';
+function getCCTVPlaylist() {
+    // 央視頻 PC 端分頁 API
+    $url = "https://yangshipin.cn";
     
-    // 增加 Header 模擬瀏覽器，避免被 API 封鎖
-    $opts = [
-        "http" => [
-            "method" => "GET",
-            "header" => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/110.0.0.0 Safari/537.36\r\n",
-            "timeout" => 10
-        ]
-    ];
-    $context = stream_context_create($opts);
-    $response = @file_get_contents($apiUrl, false, $context);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    // 必須模擬瀏覽器，否則 API 可能回傳 403 或 404
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36');
     
-    if (!$response) {
-        die("無法獲取資料，請檢查伺服器網路連線。");
+    $res = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($httpCode !== 200 || !$res) {
+        die("無法讀取 API (HTTP Code: $httpCode)。請檢查伺服器是否能連外網。");
     }
 
-    $data = json_decode($response, true);
+    $json = json_decode($res, true);
     
-    // 關鍵修正：feedModuleList 是陣列，通常頻道資料在第 0 個索引中
-    $channelList = $data['data']['feedModuleList'][0]['dataTvChannelList'] ?? [];
+    // 定位頻道列表 (修正索引問題)
+    $modules = $json['data']['feedModuleList'] ?? [];
+    $channels = [];
 
-    // 如果第 0 個找不到，嘗試遍歷尋找 (增加保險)
-    if (empty($channelList)) {
-        foreach ($data['data']['feedModuleList'] as $module) {
-            if (!empty($module['dataTvChannelList'])) {
-                $channelList = $module['dataTvChannelList'];
-                break;
-            }
+    foreach ($modules as $module) {
+        if (isset($module['dataTvChannelList']) && !empty($module['dataTvChannelList'])) {
+            $channels = $module['dataTvChannelList'];
+            break;
         }
     }
 
-    if (empty($channelList)) {
-        die("未找到任何頻道資料。");
+    if (empty($channels)) {
+        die("API 解析成功，但找不到頻道清單。可能 API 結構已變更。");
     }
 
-    // 輸出分類名稱
+    // 開始輸出 TXT 內容
     echo "央視頻,#genre#\n";
-
-    foreach ($channelList as $channel) {
-        $name = $channel['channelName'];
-        $streamId = $channel['streamId'];
-        $pid = $channel['pid'];
+    foreach ($channels as $item) {
+        $name = $item['channelName'];
+        $sid  = $item['streamId'];
+        $pid  = $item['pid'];
         
-        // 你的代理播放地址格式
-        $playUrl = "http://43.156.8{$streamId}&pid={$pid}&q=fhd";
-
-        // 輸出 TXT 標準格式
+        // 這裡套用你的代理服務器地址
+        $playUrl = "http://43.156.8{$sid}&pid={$pid}&q=fhd";
+        
         echo "{$name},{$playUrl}\n";
     }
 }
 
-generateTxtPlaylist();
+getCCTVPlaylist();
+?>
