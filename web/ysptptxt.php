@@ -1,43 +1,48 @@
 <?php
-/**
- * 設定標頭為純文字格式 (UTF-8)
- * 這樣瀏覽器或播放器讀取時會直接視為文字內容
- */
+// 設定輸出格式為純文字 (UTF-8)
 header('Content-Type: text/plain; charset=utf-8');
 
 /**
- * 獲取央視頻頻道資料並轉換為 TXT 播放列表
+ * 獲取央視頻頻道資料並轉換為 TXT 格式
  */
 function generateTxtPlaylist() {
     $apiUrl = 'https://yangshipin.cn';
     
-    // 設定超時防止卡死
+    // 增加 Header 模擬瀏覽器，避免被 API 封鎖
     $opts = [
         "http" => [
             "method" => "GET",
-            "header" => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\r\n",
+            "header" => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/110.0.0.0 Safari/537.36\r\n",
             "timeout" => 10
         ]
     ];
     $context = stream_context_create($opts);
-    
-    // 獲取 API 內容
     $response = @file_get_contents($apiUrl, false, $context);
     
     if (!$response) {
-        die("錯誤：無法獲取 API 資料");
+        die("無法獲取資料，請檢查伺服器網路連線。");
     }
 
     $data = json_decode($response, true);
     
-    // 根據 API 結構定位頻道清單
+    // 關鍵修正：feedModuleList 是陣列，通常頻道資料在第 0 個索引中
     $channelList = $data['data']['feedModuleList'][0]['dataTvChannelList'] ?? [];
 
+    // 如果第 0 個找不到，嘗試遍歷尋找 (增加保險)
     if (empty($channelList)) {
-        die("錯誤：找不到頻道清單");
+        foreach ($data['data']['feedModuleList'] as $module) {
+            if (!empty($module['dataTvChannelList'])) {
+                $channelList = $module['dataTvChannelList'];
+                break;
+            }
+        }
     }
 
-    // 輸出分類標題（許多 TXT 播放器支援此格式）
+    if (empty($channelList)) {
+        die("未找到任何頻道資料。");
+    }
+
+    // 輸出分類名稱
     echo "央視頻,#genre#\n";
 
     foreach ($channelList as $channel) {
@@ -45,13 +50,12 @@ function generateTxtPlaylist() {
         $streamId = $channel['streamId'];
         $pid = $channel['pid'];
         
-        // 組合播放地址
+        // 你的代理播放地址格式
         $playUrl = "http://43.156.8{$streamId}&pid={$pid}&q=fhd";
 
-        // 輸出 TXT 格式：頻道名稱,播放地址
+        // 輸出 TXT 標準格式
         echo "{$name},{$playUrl}\n";
     }
 }
 
-// 執行函數
 generateTxtPlaylist();
